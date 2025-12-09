@@ -1,20 +1,31 @@
+using UnityEngine;
+
 namespace Player
 {
     public class PlayerIdleState : PlayerStateBase
     {
+        public PlayerIdleState(PlayerController player, PlayerStateMachine stateMachine) : 
+            base(player, stateMachine) { }
+
         public override void Enter()
         {
-            throw new System.NotImplementedException();
+            // controller.Animator.SetBool("Idle", true);
         }
 
         public override void Update()
         {
-            throw new System.NotImplementedException();
+            float x = Input.GetAxis("Horizontal");
+            float z = Input.GetAxis("Vertical");
+
+            if (Mathf.Abs(x) > 0.1f || Mathf.Abs(z) > 0.1f)
+            {
+                stateMachine.ChangeState(player.GetState<PlayerMoveState>());
+            }
         }
 
         public override void Exit()
         {
-            throw new System.NotImplementedException();
+           
         }
     }
 }

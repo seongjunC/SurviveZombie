@@ -1,20 +1,46 @@
+using UnityEngine;
+
 namespace Player
 {
     public class PlayerMoveState : PlayerStateBase
     {
+        private static readonly int IsMove = Animator.StringToHash("IsMove");
+
+        public PlayerMoveState(PlayerController player, PlayerStateMachine stateMachine) : 
+            base(player, stateMachine) { }
+        
         public override void Enter()
         {
-            
+            player.animator.SetBool(IsMove, true);
         }
 
         public override void Update()
         {
-            throw new System.NotImplementedException();
+            float x = Input.GetAxis("Horizontal");
+            float z = Input.GetAxis("Vertical");
+
+            Vector3 direction = new Vector3(x, 0, z).normalized;
+
+            if (direction.magnitude < 0.1f)
+            {
+                stateMachine.ChangeState(player.GetState<PlayerIdleState>());
+                return;
+            }
+            
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            player.transform.rotation = 
+                Quaternion.Slerp(
+                    player.transform.rotation, 
+                    targetRotation, 
+                    Time.deltaTime * player.turnSpeed);
+
+            player.characterController.Move(
+                player.moveSpeed * Time.deltaTime * direction);
         }
 
         public override void Exit()
         {
-            throw new System.NotImplementedException();
+            player.animator.SetBool(IsMove, false);
         }
     }
 }
