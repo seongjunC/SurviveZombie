@@ -13,17 +13,20 @@ namespace Player
 
         public override void Enter()
         {
-            player.animator.SetBool(Dead, true);
+            player.animator.SetTrigger(Dead);
+            player.characterController.enabled = false;
+            
+            //TODO : 게임 오버 실행
         }
 
         public override void Update()
         {
-            throw new System.NotImplementedException();
+
         }
 
         public override void Exit()
         {
-            throw new System.NotImplementedException();
+
         }
     }
 }

@@ -20,6 +20,13 @@ namespace Player
             if (Mathf.Abs(x) > 0.1f || Mathf.Abs(z) > 0.1f)
             {
                 stateMachine.ChangeState(player.GetState<PlayerMoveState>());
+                return;
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                stateMachine.ChangeState(player.GetState<PlayerAimState>());
+                return;
             }
         }
 

@@ -4,7 +4,7 @@ namespace Player
 {
     public class PlayerMoveState : PlayerStateBase
     {
-        private static readonly int IsMove = Animator.StringToHash("IsMove");
+        private static readonly int IsMove = Animator.StringToHash("isMove");
 
         public PlayerMoveState(PlayerController player, PlayerStateMachine stateMachine) : 
             base(player, stateMachine) { }
@@ -26,6 +26,8 @@ namespace Player
                 stateMachine.ChangeState(player.GetState<PlayerIdleState>());
                 return;
             }
+            
+            
             
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             player.transform.rotation = 
