@@ -35,9 +35,8 @@ namespace DefaultNamespace
             }
         }
 
-        public GameObject SpawnObject(PoolObjectInfo poolObj, Vector3 position, Quaternion rotation)
+        public GameObject SpawnObject(string objectTag, Vector3 position, Quaternion rotation)
         {
-            var objectTag = poolObj.prefab.tag;
             // TODO : 딕셔너리에 태그가 없으면 null 반환 중 / 프리팹 없어도 만들어서 반환?
             if (!poolDictionary.ContainsKey(objectTag)) return null;
             
