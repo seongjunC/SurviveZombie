@@ -12,7 +12,7 @@ namespace Monster
         public void OnEnable()
         {
             foreach(var spawner in spawners){
-                if (spawner is not null && spawner.gameObject.activeSelf) 
+                if (spawner is not null && spawner.gameObject.activeSelf)
                     spawner.ActivateSpawner();
             }
         }
@@ -20,7 +20,7 @@ namespace Monster
         public void OnDisable()
         {
             foreach(var spawner in spawners){
-                if (spawner is not null && spawner.isActiveAndEnabled) 
+                if (spawner is not null) 
                     spawner.DeactivateSpawner();
             }
         }

@@ -5,7 +5,7 @@ namespace Monster.MonsterState
     public class MonsterAttackState :MonsterStateBase
     {
         private static readonly int IsMove = Animator.StringToHash("IsMove");
-        private static readonly int Attack1 = Animator.StringToHash("Attack");
+        private static readonly int attack = Animator.StringToHash("Attack");
         private float attackCool = 1.5f;
         private float lastAttack;
         
@@ -26,7 +26,7 @@ namespace Monster.MonsterState
         {
             if (controller.target is null) return;
             
-            Vector3 direction = (controller.transform.position - controller.target.position).normalized;
+            Vector3 direction = ( controller.target.position - controller.transform.position ).normalized;
             direction.y = 0;
 
             Quaternion lookRotation = Quaternion.LookRotation(direction);
@@ -52,7 +52,7 @@ namespace Monster.MonsterState
         private void Attack()
         {
             lastAttack = Time.time;
-            controller.animator.SetTrigger(Attack1);
+            controller.animator.SetTrigger(attack);
         }
 
         public override void Exit()

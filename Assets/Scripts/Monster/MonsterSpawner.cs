@@ -14,11 +14,13 @@ namespace Monster
         public void ActivateSpawner()
         {
             if (_isDead) return;
-
+            
             monster ??= ObjectPoolManager.Instance.SpawnObject(
                 monsterTag, transform.position, Quaternion.identity);
-            
+
             if (monster is null) return;
+            
+            monster.transform.SetParent(this.transform);
 
             var controller = monster.GetComponent<MonsterController>();
 
@@ -63,6 +65,7 @@ namespace Monster
             }
             else savedHp = 0;
                         
+            ObjectPoolManager.Instance.ReturnObjectToPool(monster);
             controller.OnDeath -= HandleMonsterDeath;
             
             monster = null;

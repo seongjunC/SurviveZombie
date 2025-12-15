@@ -12,6 +12,7 @@ namespace DefaultNamespace
         {
             public GameObject prefab;
             public int size;
+            public GameObject parent;
         }
 
         public List<PoolObjectInfo> pools;
@@ -27,7 +28,7 @@ namespace DefaultNamespace
 
                 for (int i = 0; i < pool.size; i++)
                 {
-                    GameObject obj = Instantiate(pool.prefab);
+                    GameObject obj = Instantiate(pool.prefab, pool.parent.transform);
                     obj.SetActive(false);
                     poolQueue.Enqueue(obj);
                 }
@@ -38,7 +39,8 @@ namespace DefaultNamespace
         public GameObject SpawnObject(string objectTag, Vector3 position, Quaternion rotation)
         {
             // TODO : 딕셔너리에 태그가 없으면 null 반환 중 / 프리팹 없어도 만들어서 반환?
-            if (!poolDictionary.ContainsKey(objectTag)) return null;
+            if (!poolDictionary.ContainsKey(objectTag))
+                return null;
             
             Queue<GameObject> poolQueue = poolDictionary[objectTag];
             GameObject objToSpawn = null;
@@ -75,6 +77,12 @@ namespace DefaultNamespace
             pooledObj?.OnObjectSpawn();
 
             return objToSpawn;
+        }
+
+        public void ReturnObjectToPool(GameObject obj)
+        {
+            var info = pools.FirstOrDefault(p => p.prefab.CompareTag(obj.tag));
+            obj.transform.SetParent(info.parent.transform);
         }
         
     }
