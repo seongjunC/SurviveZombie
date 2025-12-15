@@ -68,9 +68,10 @@ namespace DefaultNamespace
                 poolQueue.Enqueue(objToSpawn);
             }
             
-            objToSpawn.SetActive(true);
             objToSpawn.transform.position = position;
             objToSpawn.transform.rotation = rotation;
+            objToSpawn.SetActive(true);
+
             
             
             IPooledObject pooledObj = objToSpawn.GetComponent<IPooledObject>();

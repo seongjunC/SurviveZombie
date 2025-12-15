@@ -25,6 +25,7 @@ namespace Player
 
             if (Input.GetMouseButtonDown(0))
             {
+                Debug.Log("Shoot");
                 player.Shoot();
                 return;
             }
@@ -51,13 +52,15 @@ namespace Player
 
         private void RotateCamera()
         {
-            Vector3 targetForward = player.cameraTransform.forward;
+            player.mainCamera.gameObject.SetActive(false);
+            player.aimCamera.gameObject.SetActive(true);
+            Vector3 targetForward = player.aimCamera.transform.forward;
             targetForward.y = 0;
             if (targetForward == Vector3.zero) return;
             
             Quaternion targetRotation = Quaternion.LookRotation(targetForward);
-            player.cameraTransform.rotation = Quaternion.Slerp(
-                player.cameraTransform.rotation,
+            player.aimCamera.transform.rotation = Quaternion.Slerp(
+                player.aimCamera.transform.rotation,
                 targetRotation,
                 player.turnSpeed * Time.deltaTime
             );
@@ -75,8 +78,8 @@ namespace Player
                 return;
             }
             
-            Vector3 camForward = player.cameraTransform.forward;
-            Vector3 camRight = player.cameraTransform.right;
+            Vector3 camForward = player.aimCamera.transform.forward;
+            Vector3 camRight = player.aimCamera.transform.right;
 
             camForward.y = 0;
             camRight.y = 0;
@@ -95,6 +98,8 @@ namespace Player
         {
             player.animator.SetBool(isAim, false);
             
+            player.mainCamera.gameObject.SetActive(true);
+            player.aimCamera.gameObject.SetActive(false);
             // TODO : 카메라 줌 아웃, 조준 UI 비활성화 등
         }
     }

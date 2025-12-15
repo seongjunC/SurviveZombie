@@ -23,8 +23,10 @@ namespace Player
 
         public float dashDuration = 0.5f;
         
-        public Transform cameraTransform;
+        public Camera mainCamera;
+        public Camera aimCamera;
         public GameObject gunObject;
+        public Transform SpawnedBullet;
         
         
      
@@ -97,7 +99,9 @@ namespace Player
 
         public void Shoot()
         {
-            ObjectPoolManager.Instance.SpawnObject("Bullet", gunObject.transform.position, gunObject.transform.rotation);
+            GameObject obj = ObjectPoolManager.Instance.SpawnObject(
+                "Bullet", gunObject.transform.position, gunObject.transform.rotation);
+            obj.transform.SetParent(SpawnedBullet);
         }
 
         public T GetState<T>() where T : PlayerStateBase

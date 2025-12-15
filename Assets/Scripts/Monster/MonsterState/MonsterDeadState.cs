@@ -15,7 +15,6 @@ namespace Monster.MonsterState
         {
             controller.animator.SetTrigger(Dead);
             controller.navMeshAgent.enabled = false;
-            controller.navMeshAgent.isStopped = true;
             
             Collider col = controller.GetComponent<Collider>();
             

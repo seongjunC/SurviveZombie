@@ -42,7 +42,7 @@ namespace Monster
 
             states.TryAdd(typeof(MonsterAttackState), new MonsterAttackState(stateMachine, this));
             states.TryAdd(typeof(MonsterChaseState), new MonsterChaseState(stateMachine, this));
-            states.TryAdd(typeof(MonsterDeadState), new MonsterChaseState(stateMachine, this));
+            states.TryAdd(typeof(MonsterDeadState), new MonsterDeadState(stateMachine, this));
             states.TryAdd(typeof(MonsterIdleState), new MonsterIdleState(stateMachine, this));
             states.TryAdd(typeof(MonsterReturnState), new MonsterReturnState(stateMachine, this));
         }
