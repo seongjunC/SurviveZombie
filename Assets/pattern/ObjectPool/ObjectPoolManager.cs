@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using pattern.Singleton;
 using UnityEngine;
 
@@ -7,14 +8,14 @@ namespace DefaultNamespace
     public class ObjectPoolManager : Singleton<ObjectPoolManager>
     {
         [System.Serializable]
-        public class Pool
+        public class PoolObjectInfo
         {
             public string tag;
             public GameObject prefab;
             public int size;
         }
 
-        public List<Pool> pools;
+        public List<PoolObjectInfo> pools;
         public Dictionary<string, Queue<GameObject>> poolDictionary;
 
         private void Start()
@@ -35,22 +36,45 @@ namespace DefaultNamespace
             }
         }
 
-        public GameObject SpawnObject(string tag, Vector3 position, Quaternion rotation)
+        public GameObject SpawnObject(string objectTag, Vector3 position, Quaternion rotation)
         {
-            if (!poolDictionary.ContainsKey(tag)) return null;
+            // TODO : 딕셔너리에 태그가 없으면 null 반환 중 / 프리팹 없어도 만들어서 반환?
+            if (!poolDictionary.ContainsKey(objectTag)) return null;
             
-            GameObject objToSpawn = poolDictionary[tag].Dequeue();
+            Queue<GameObject> poolQueue = poolDictionary[objectTag];
+            GameObject objToSpawn = null;
+
+            var count = poolQueue.Count;
+            for (int i = 0; i < count; i++)
+            {
+                GameObject obj = poolQueue.Dequeue();
+                poolQueue.Enqueue(obj);
+
+                if (!obj.activeInHierarchy)
+                {
+                    objToSpawn = obj;
+                    break;
+                }
+            }
+
+            if (objToSpawn is null)
+            {
+                var info = pools.FirstOrDefault(p => p.tag == objectTag);
+                
+                objToSpawn = Instantiate(info.prefab);
+                objToSpawn.SetActive(false);
+                
+                poolQueue.Enqueue(objToSpawn);
+            }
+            
             objToSpawn.SetActive(true);
             objToSpawn.transform.position = position;
             objToSpawn.transform.rotation = rotation;
             
-            IPooledObject pooledObj = objToSpawn.GetComponent<IPooledObject>();
-            if (pooledObj is not null)
-            {
-                pooledObj.OnObjectSpawn();
-            }
             
-            poolDictionary[tag].Enqueue(objToSpawn);
+            IPooledObject pooledObj = objToSpawn.GetComponent<IPooledObject>();
+            pooledObj?.OnObjectSpawn();
+
             return objToSpawn;
         }
         
