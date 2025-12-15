@@ -10,7 +10,6 @@ namespace DefaultNamespace
         [System.Serializable]
         public class PoolObjectInfo
         {
-            public string tag;
             public GameObject prefab;
             public int size;
         }
@@ -32,12 +31,13 @@ namespace DefaultNamespace
                     obj.SetActive(false);
                     poolQueue.Enqueue(obj);
                 }
-                poolDictionary.Add(pool.tag, poolQueue);
+                poolDictionary.Add(pool.prefab.tag, poolQueue);
             }
         }
 
-        public GameObject SpawnObject(string objectTag, Vector3 position, Quaternion rotation)
+        public GameObject SpawnObject(PoolObjectInfo poolObj, Vector3 position, Quaternion rotation)
         {
+            var objectTag = poolObj.prefab.tag;
             // TODO : 딕셔너리에 태그가 없으면 null 반환 중 / 프리팹 없어도 만들어서 반환?
             if (!poolDictionary.ContainsKey(objectTag)) return null;
             
@@ -59,7 +59,7 @@ namespace DefaultNamespace
 
             if (objToSpawn is null)
             {
-                var info = pools.FirstOrDefault(p => p.tag == objectTag);
+                var info = pools.FirstOrDefault(p => p.prefab.CompareTag(objectTag));
                 
                 objToSpawn = Instantiate(info.prefab);
                 objToSpawn.SetActive(false);
