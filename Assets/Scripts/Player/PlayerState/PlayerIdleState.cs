@@ -23,9 +23,9 @@ namespace Player
                 return;
             }
 
-            if (Input.GetMouseButtonDown(1))
+            if (!player.characterController.isGrounded)
             {
-                stateMachine.ChangeState(player.GetState<PlayerAimState>());
+                stateMachine.ChangeState(player.GetState<PlayerMoveState>());
                 return;
             }
         }

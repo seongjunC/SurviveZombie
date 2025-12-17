@@ -16,46 +16,25 @@ namespace Player
         {
             player.animator.SetBool(isAim, true);
             
-            RotateCamera(true);
-            // TODO : 카메라 줌 인, 조준 UI 활성화 등
+            player.SetAimCamera(true);
         }
 
         public override void Update()
         {
-
             if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log("Shoot");
                 player.Shoot();
                 return;
             }
 
             if (Input.GetMouseButtonUp(1))
             {
-                float x = Input.GetAxisRaw("Horizontal");
-                float y = Input.GetAxisRaw("Vertical");
-
-                if (Mathf.Abs(x) > 0.1f || Mathf.Abs(y) > 0.1f)
-                {
-                    stateMachine.ChangeState(player.GetState<PlayerMoveState>());
-                }
-                else
-                {
-                    stateMachine.ChangeState(player.GetState<PlayerIdleState>());
-                }
-
+                stateMachine.ChangeState(player.GetState<PlayerIdleState>());
                 return;
             }
-            RotateCamera(true);
             HandleMovement();
         }
-
-        private void RotateCamera(bool ON)
-        {
-            player.mainCamera.gameObject.SetActive(!ON);
-            player.aimCamera.gameObject.SetActive(ON);
-        }
-
+        
         private void HandleMovement()
         {
             float x = Input.GetAxis("Horizontal");
@@ -68,16 +47,11 @@ namespace Player
                 return;
             }
             
-            Vector3 Direction = new Vector3(x, 0, z).normalized;
+            Vector3 moveDirection = (player.transform.forward * z + player.transform.right * x).normalized;
             
-            Quaternion targetRotation = Quaternion.LookRotation(Direction);
-            player.transform.rotation = 
-                Quaternion.Slerp(
-                    player.transform.rotation, 
-                    targetRotation, 
-                    Time.deltaTime * player.turnSpeed);
+            Vector3 velocity = (moveDirection * player.aimMoveSpeed) + player.GetVerticalVector();
             
-            player.characterController.Move(player.aimMoveSpeed * Time.deltaTime * Direction);
+            player.characterController.Move(velocity * Time.deltaTime);
             
             player.animator.SetFloat(InputX, x, 0.1f, Time.deltaTime);
             player.animator.SetFloat(InputY, z, 0.1f, Time.deltaTime);
@@ -86,8 +60,11 @@ namespace Player
         public override void Exit()
         {
             player.animator.SetBool(isAim, false);
+            player.SetAimCamera(false);
             
-            RotateCamera(false);
+            player.animator.SetFloat(InputX, 0, 0.1f, Time.deltaTime);
+            player.animator.SetFloat(InputY, 0, 0.1f, Time.deltaTime);
+            
             // TODO : 카메라 줌 아웃, 조준 UI 비활성화 등
         }
     }

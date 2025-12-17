@@ -16,8 +16,8 @@ namespace Player
 
         public override void Update()
         {
-            float x = Input.GetAxis("Horizontal");
-            float z = Input.GetAxis("Vertical");
+            float x = Input.GetAxisRaw("Horizontal");
+            float z = Input.GetAxisRaw("Vertical");
 
             Vector3 direction = new Vector3(x, 0, z).normalized;
 
@@ -27,18 +27,12 @@ namespace Player
                 return;
             }
             
+            Vector3 moveDirection = (player.transform.forward * z + player.transform.right * x).normalized;
             
+            Vector3 velocity = (moveDirection * player.moveSpeed) + player.GetVerticalVector();
             
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            player.transform.rotation = 
-                Quaternion.Slerp(
-                    player.transform.rotation, 
-                    targetRotation, 
-                    Time.deltaTime * player.turnSpeed);
-
-            Vector3 velocity = direction * player.moveSpeed + player.GetVerticalVector();
-            player.characterController.Move(
-                velocity * Time.deltaTime );
+            player.characterController.Move(velocity * Time.deltaTime);
+            
         }
 
         public override void Exit()

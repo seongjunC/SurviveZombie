@@ -13,7 +13,9 @@ namespace Player
         [Header("이동 설정")] 
         public float moveSpeed = 5f;
         public float turnSpeed = 30f;
+        public float CameraTurnSpeed = 10f;
         public float aimMoveSpeed = 2.5f;
+        public float dashSpeed = 15.0f;
         
         [Header("전투 설정")]
         public int currentHealth;
@@ -25,9 +27,11 @@ namespace Player
         public bool isInvincible = false;
         public float dashDuration = 0.5f;
         
+        [Header("카메라 설정")]
         public CinemachineCamera mainCamera;
         public CinemachineCamera aimCamera;
-        public CinemachineBrain cinemachine;
+        private Camera mainCameraComponent;
+        
         public GameObject gunObject;
         public Transform SpawnedBullet;
         
@@ -35,7 +39,6 @@ namespace Player
         private float verticalVelocity;
         
         
-     
         public CharacterController characterController { get; private set; }
         public Animator animator { get; private set; }
 
@@ -48,6 +51,7 @@ namespace Player
         {
             characterController = GetComponent<CharacterController>();
             animator = GetComponent<Animator>();
+            mainCameraComponent = Camera.main;
             _states = new Dictionary<Type, PlayerStateBase>();
 
             currentHealth = maxHealth;
@@ -71,6 +75,7 @@ namespace Player
         {
             ApplyGravity();
             CheckAnyState();
+            RotateCamera();
             stateMachine.CurrentState.Update();
         }
 
@@ -88,9 +93,14 @@ namespace Player
 
         public void CheckAnyState()
         {
-            if (stateMachine.CurrentState is PlayerDeadState or PlayerReloadState or PlayerReloadState
+            if (stateMachine.CurrentState is PlayerDeadState or PlayerReloadState or PlayerDashState
                 ) return;
 
+            if (Input.GetMouseButtonDown(1))
+            {
+                stateMachine.ChangeState(GetState<PlayerAimState>());
+                return;
+            }
             if (Input.GetKeyDown(KeyCode.R))
             {
                 stateMachine.ChangeState(GetState<PlayerReloadState>());
@@ -104,11 +114,37 @@ namespace Player
             }
         }
 
+        public void SetAimCamera(bool ON)
+        {
+            mainCamera.Priority = ON ? 10 : 20;
+            aimCamera.Priority = ON ? 20 : 10;
+        }
+        
+        public void RotateCamera()
+        {
+            if (mainCamera is null) return;
+            
+            var ray = mainCameraComponent.ScreenPointToRay(Input.mousePosition);
+            var groundPlane = new Plane(Vector3.up, transform.position);
+
+            if (!groundPlane.Raycast(ray, out float enter)) return;
+            
+            Vector3 point = ray.GetPoint(enter);
+            Vector3 direction = point - transform.position;
+            direction.y = 0;
+
+            if (!(direction.magnitude > 0.01f)) return;
+            var targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation, 
+                targetRotation, 
+                Time.deltaTime * CameraTurnSpeed);
+
+        } 
+
         public void TakeDamage(int amount)
         {
-            if (currentHealth <= 0) return;
-
-            if (isInvincible) return;
+            if (currentHealth <= 0 || isInvincible) return;
             
             currentHealth -= amount;
 
@@ -127,6 +163,7 @@ namespace Player
             obj.transform.SetParent(SpawnedBullet);
             curMagSize--;
         }
+        
 
         public Vector3 GetVerticalVector()
         {

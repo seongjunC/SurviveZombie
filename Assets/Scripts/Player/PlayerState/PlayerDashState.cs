@@ -6,7 +6,6 @@ namespace Player
     {
         private static readonly int Dash = Animator.StringToHash("Dash");
         private float dashTimer;
-        private float dashSpeed = 5.0f;
         private Vector3 dashDirection;
         
         public PlayerDashState(PlayerController player, PlayerStateMachine stateMachine) : base(player, stateMachine)
@@ -38,7 +37,7 @@ namespace Player
 
         public override void Update()
         {
-            Vector3 moveVelocity = (dashDirection * dashSpeed);
+            Vector3 moveVelocity = (dashDirection * player.dashSpeed) + player.GetVerticalVector();
             
             player.characterController.Move(moveVelocity * Time.deltaTime);
             
