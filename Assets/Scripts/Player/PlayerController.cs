@@ -99,9 +99,11 @@ namespace Player
 
         public void Shoot()
         {
+            if (curMagSize <= 0) return;
             GameObject obj = ObjectPoolManager.Instance.SpawnObject(
-                "Bullet", gunObject.transform.position, gunObject.transform.rotation);
+                "Bullet", gunObject.transform.position, transform.rotation);
             obj.transform.SetParent(SpawnedBullet);
+            curMagSize--;
         }
 
         public T GetState<T>() where T : PlayerStateBase

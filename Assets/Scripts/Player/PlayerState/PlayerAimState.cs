@@ -78,17 +78,16 @@ namespace Player
                 return;
             }
             
-            Vector3 camForward = player.aimCamera.transform.forward;
-            Vector3 camRight = player.aimCamera.transform.right;
-
-            camForward.y = 0;
-            camRight.y = 0;
-            camForward.Normalize();
-            camRight.Normalize();
-
-            Vector3 moveDir = (camForward * z + camRight * x).normalized;
+            Vector3 Direction = new Vector3(x, 0, z).normalized;
             
-            player.characterController.Move(player.aimMoveSpeed * Time.deltaTime * moveDir);
+            Quaternion targetRotation = Quaternion.LookRotation(Direction);
+            player.transform.rotation = 
+                Quaternion.Slerp(
+                    player.transform.rotation, 
+                    targetRotation, 
+                    Time.deltaTime * player.turnSpeed);
+            
+            player.characterController.Move(player.aimMoveSpeed * Time.deltaTime * Direction);
             
             player.animator.SetFloat(InputX, x, 0.1f, Time.deltaTime);
             player.animator.SetFloat(InputY, z, 0.1f, Time.deltaTime);

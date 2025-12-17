@@ -28,6 +28,7 @@ namespace Object
         public void Deactivate()
         {
             Debug.Log("Deactivate");
+            ObjectPoolManager.Instance.ReturnObjectToPool(gameObject);
             gameObject.SetActive(false);
         }
 
