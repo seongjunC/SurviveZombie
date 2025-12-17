@@ -36,8 +36,9 @@ namespace Player
                     targetRotation, 
                     Time.deltaTime * player.turnSpeed);
 
+            Vector3 velocity = direction * player.moveSpeed + player.GetVerticalVector();
             player.characterController.Move(
-                player.moveSpeed * Time.deltaTime * direction);
+                velocity * Time.deltaTime );
         }
 
         public override void Exit()

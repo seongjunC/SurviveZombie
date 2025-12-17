@@ -6,7 +6,7 @@ namespace Player
     {
         private static readonly int Dash = Animator.StringToHash("Dash");
         private float dashTimer;
-        private float dashSpeed = 15.0f;
+        private float dashSpeed = 5.0f;
         private Vector3 dashDirection;
         
         public PlayerDashState(PlayerController player, PlayerStateMachine stateMachine) : base(player, stateMachine)
@@ -17,9 +17,11 @@ namespace Player
         {
             player.animator.SetTrigger(Dash);
             dashTimer = player.dashDuration;
+
+            player.isInvincible = true;
             
-            float x = Input.GetAxis("Horizontal");
-            float z = Input.GetAxis("Vertical");
+            float x = Input.GetAxisRaw("Horizontal");
+            float z = Input.GetAxisRaw("Vertical");
             
             dashDirection = new Vector3(x, 0, z).normalized;
 
@@ -27,13 +29,18 @@ namespace Player
             {
                 dashDirection = player.transform.forward;
             }
-            
-            // TODO : 대시중 무적 상태 진입 
+            else
+            {
+                player.transform.rotation = Quaternion.LookRotation(dashDirection);
+            }
+
         }
 
         public override void Update()
         {
-            player.characterController.Move(dashSpeed * Time.deltaTime * dashDirection);
+            Vector3 moveVelocity = (dashDirection * dashSpeed);
+            
+            player.characterController.Move(moveVelocity * Time.deltaTime);
             
             dashTimer -= Time.deltaTime;
             
@@ -45,7 +52,7 @@ namespace Player
 
         public override void Exit()
         {
-            //TODO: 무적 해제
+            player.isInvincible = false;
         }
     }
 }

@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
+using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -11,7 +13,6 @@ namespace Player
         [Header("이동 설정")] 
         public float moveSpeed = 5f;
         public float turnSpeed = 30f;
-        
         public float aimMoveSpeed = 2.5f;
         
         [Header("전투 설정")]
@@ -21,12 +22,17 @@ namespace Player
         public int maxMagSize = 30;
         public int curMagSize;
 
+        public bool isInvincible = false;
         public float dashDuration = 0.5f;
         
-        public Camera mainCamera;
-        public Camera aimCamera;
+        public CinemachineCamera mainCamera;
+        public CinemachineCamera aimCamera;
+        public CinemachineBrain cinemachine;
         public GameObject gunObject;
         public Transform SpawnedBullet;
+        
+        private float gravity = -9.81f;
+        private float verticalVelocity;
         
         
      
@@ -63,8 +69,21 @@ namespace Player
 
         private void Update()
         {
+            ApplyGravity();
             CheckAnyState();
             stateMachine.CurrentState.Update();
+        }
+
+        private void ApplyGravity()
+        {
+            if (characterController.isGrounded && verticalVelocity < 0)
+            {
+                verticalVelocity = -2f;
+            }
+            else
+            {
+                verticalVelocity += gravity * Time.deltaTime;
+            }
         }
 
         public void CheckAnyState()
@@ -88,6 +107,8 @@ namespace Player
         public void TakeDamage(int amount)
         {
             if (currentHealth <= 0) return;
+
+            if (isInvincible) return;
             
             currentHealth -= amount;
 
@@ -96,6 +117,7 @@ namespace Player
                 stateMachine.ChangeState(GetState<PlayerDeadState>());
             }
         }
+        
 
         public void Shoot()
         {
@@ -104,6 +126,11 @@ namespace Player
                 "Bullet", gunObject.transform.position, transform.rotation);
             obj.transform.SetParent(SpawnedBullet);
             curMagSize--;
+        }
+
+        public Vector3 GetVerticalVector()
+        {
+            return new Vector3(0, verticalVelocity, 0);
         }
 
         public T GetState<T>() where T : PlayerStateBase
