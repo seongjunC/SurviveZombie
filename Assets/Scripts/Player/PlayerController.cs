@@ -69,6 +69,9 @@ namespace Player
         private void Start()
         {
             stateMachine.Initialize(GetState<PlayerIdleState>());
+            
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
 
         private void Update()
@@ -134,11 +137,15 @@ namespace Player
             direction.y = 0;
 
             if (!(direction.magnitude > 0.01f)) return;
+
+            float speedMultiplier = 1.0f;
+            speedMultiplier = Mathf.Clamp01(direction.magnitude / 10.0f);
+            
             var targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(
                 transform.rotation, 
                 targetRotation, 
-                Time.deltaTime * CameraTurnSpeed);
+                Time.deltaTime * CameraTurnSpeed * speedMultiplier);
 
         } 
 

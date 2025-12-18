@@ -14,6 +14,8 @@ namespace Player
 
         public override void Update()
         {
+            player.characterController.Move(player.GetVerticalVector() * Time.deltaTime);
+            
             float x = Input.GetAxis("Horizontal");
             float z = Input.GetAxis("Vertical");
 
@@ -25,6 +27,7 @@ namespace Player
 
             if (!player.characterController.isGrounded)
             {
+                Debug.Log("Not Grounded");
                 stateMachine.ChangeState(player.GetState<PlayerMoveState>());
                 return;
             }

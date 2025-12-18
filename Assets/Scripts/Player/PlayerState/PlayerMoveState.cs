@@ -11,6 +11,7 @@ namespace Player
         
         public override void Enter()
         {
+            Debug.Log("Move State Enter");
             player.animator.SetBool(IsMove, true);
         }
 
