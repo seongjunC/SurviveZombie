@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public class MagView
+    public class MagView : MonoBehaviour
     {
         public Image[] magImages;
         public TextMeshProUGUI magText;
