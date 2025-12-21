@@ -15,6 +15,7 @@ namespace Player
         public float turnSpeed = 30f;
         public float CameraTurnSpeed = 10f;
         public float aimMoveSpeed = 2.5f;
+        public float aimTurnSpeed = 0.5f;
         public float dashSpeed = 15.0f;
         
         [Header("전투 설정")]

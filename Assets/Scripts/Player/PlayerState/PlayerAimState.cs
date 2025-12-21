@@ -7,9 +7,11 @@ namespace Player
         public static readonly int isAim = Animator.StringToHash("isAiming");
         private static readonly int InputX = Animator.StringToHash("InputX");
         private static readonly int InputY = Animator.StringToHash("InputY");
+        private Transform cameraTransform;
 
         public PlayerAimState(PlayerController player, PlayerStateMachine stateMachine) : base(player, stateMachine)
         {
+            if (Camera.main is not null) cameraTransform = Camera.main.transform;
         }
 
         public override void Enter()
@@ -48,10 +50,19 @@ namespace Player
             }
             
             Vector3 moveDirection = (player.transform.forward * z + player.transform.right * x).normalized;
-            
+
             Vector3 velocity = (moveDirection * player.aimMoveSpeed) + player.GetVerticalVector();
             
             player.characterController.Move(velocity * Time.deltaTime);
+            
+            if (moveDirection.magnitude >= 0.01f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+                player.transform.rotation = Quaternion.Slerp(
+                    player.transform.rotation, 
+                    targetRotation, 
+                    Time.deltaTime * player.aimTurnSpeed);
+            }
             
             player.animator.SetFloat(InputX, x, 0.1f, Time.deltaTime);
             player.animator.SetFloat(InputY, z, 0.1f, Time.deltaTime);
