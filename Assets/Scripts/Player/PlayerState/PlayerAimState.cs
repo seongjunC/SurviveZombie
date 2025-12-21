@@ -51,7 +51,7 @@ namespace Player
             
             Vector3 moveDirection = (player.transform.forward * z + player.transform.right * x).normalized;
 
-            Vector3 velocity = (moveDirection * player.aimMoveSpeed) + player.GetVerticalVector();
+            Vector3 velocity = (moveDirection * player.GetStatus(PlayerStatusType.aimMoveSpeed)) + player.GetVerticalVector();
             
             player.characterController.Move(velocity * Time.deltaTime);
             
@@ -61,7 +61,7 @@ namespace Player
                 player.transform.rotation = Quaternion.Slerp(
                     player.transform.rotation, 
                     targetRotation, 
-                    Time.deltaTime * player.aimTurnSpeed);
+                    Time.deltaTime * player.GetStatus(PlayerStatusType.aimTurnSpeed));
             }
             
             player.animator.SetFloat(InputX, x, 0.1f, Time.deltaTime);

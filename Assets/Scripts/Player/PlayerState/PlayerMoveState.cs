@@ -40,7 +40,7 @@ namespace Player
             
             Vector3 moveDirection = (camForward * z + camRight * x).normalized;
             
-            Vector3 velocity = (moveDirection * player.moveSpeed) + player.GetVerticalVector();
+            Vector3 velocity = (moveDirection * player.GetStatus(PlayerStatusType.moveSpeed)) + player.GetVerticalVector();
             
             player.characterController.Move(velocity * Time.deltaTime);
 
@@ -50,7 +50,7 @@ namespace Player
                 player.transform.rotation = Quaternion.Slerp(
                     player.transform.rotation, 
                     targetRotation, 
-                    Time.deltaTime * player.turnSpeed);
+                    Time.deltaTime * player.GetStatus(PlayerStatusType.turnSpeed));
             }
             
         }

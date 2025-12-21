@@ -13,7 +13,7 @@ namespace Player
         public override void Enter()
         {
             player.animator.SetTrigger(Reload);
-            reloadTimer = player.reloadDuration;
+            reloadTimer = player.GetStatus(PlayerStatusType.reloadDuration);
         }
 
         public override void Update()
@@ -28,7 +28,7 @@ namespace Player
 
         public override void Exit()
         {
-            player.curMagSize = player.maxMagSize;
+            player.Reload();
         }
     }
 }

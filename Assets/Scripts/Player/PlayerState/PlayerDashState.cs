@@ -15,9 +15,9 @@ namespace Player
         public override void Enter()
         {
             player.animator.SetTrigger(Dash);
-            dashTimer = player.dashDuration;
+            dashTimer = player.GetStatus(PlayerStatusType.dashDuration);
 
-            player.isInvincible = true;
+            player.ApplyInvincible();
             
             float x = Input.GetAxisRaw("Horizontal");
             float z = Input.GetAxisRaw("Vertical");
@@ -37,7 +37,7 @@ namespace Player
 
         public override void Update()
         {
-            Vector3 moveVelocity = (dashDirection * player.dashSpeed) + player.GetVerticalVector();
+            Vector3 moveVelocity = (dashDirection * player.GetStatus(PlayerStatusType.dashSpeed)) + player.GetVerticalVector();
             
             player.characterController.Move(moveVelocity * Time.deltaTime);
             
@@ -51,7 +51,7 @@ namespace Player
 
         public override void Exit()
         {
-            player.isInvincible = false;
+            player.RemoveInvincible();
         }
     }
 }

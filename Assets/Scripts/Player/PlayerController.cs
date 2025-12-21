@@ -10,23 +10,9 @@ namespace Player
 {
     public class PlayerController : MonoBehaviour
     {
-        [Header("이동 설정")] 
-        public float moveSpeed = 5f;
-        public float turnSpeed = 30f;
-        public float CameraTurnSpeed = 10f;
-        public float aimMoveSpeed = 2.5f;
-        public float aimTurnSpeed = 0.5f;
-        public float dashSpeed = 15.0f;
-        
-        [Header("전투 설정")]
-        public int currentHealth;
-        public int maxHealth = 100;
-        public float reloadDuration = 2.0f;
-        public int maxMagSize = 30;
-        public int curMagSize;
+        [Header("플레이어 스탯")]
+        [SerializeField] private PlayerStat stat;
 
-        public bool isInvincible = false;
-        public float dashDuration = 0.5f;
         
         [Header("카메라 설정")]
         public CinemachineCamera mainCamera;
@@ -38,6 +24,8 @@ namespace Player
         
         private float gravity = -9.81f;
         private float verticalVelocity;
+        
+        private bool needReload;
         
         
         public CharacterController characterController { get; private set; }
@@ -54,9 +42,6 @@ namespace Player
             animator = GetComponent<Animator>();
             mainCameraComponent = Camera.main;
             _states = new Dictionary<Type, PlayerStateBase>();
-
-            currentHealth = maxHealth;
-            curMagSize = maxMagSize;
             
             stateMachine = new PlayerStateMachine();
             _states.TryAdd(typeof(PlayerIdleState), new PlayerIdleState(this, stateMachine));
@@ -152,11 +137,9 @@ namespace Player
 
         public void TakeDamage(int amount)
         {
-            if (currentHealth <= 0 || isInvincible) return;
+            var isDead = stat.ApplyDamage(amount);
             
-            currentHealth -= amount;
-
-            if (currentHealth <= 0)
+            if (isDead)
             {
                 stateMachine.ChangeState(GetState<PlayerDeadState>());
             }
@@ -165,11 +148,20 @@ namespace Player
 
         public void Shoot()
         {
-            if (curMagSize <= 0) return;
+            if (needReload)
+            {
+                stateMachine.ChangeState(GetState<PlayerReloadState>());
+                return;
+            }
             GameObject obj = ObjectPoolManager.Instance.SpawnObject(
                 "Bullet", gunObject.transform.position, transform.rotation);
             obj.transform.SetParent(SpawnedBullet);
-            curMagSize--;
+            stat.ReduceMag();
+        }
+
+        public void Reload()
+        {
+            stat.Reload();
         }
         
 
@@ -182,5 +174,31 @@ namespace Player
         {
             return (T)_states[typeof(T)];
         }
+
+        public float GetStatus(PlayerStatusType type)
+        {
+            return stat.GetTypeValue(type);
+        }
+        
+        public void ApplyInvincible()
+        {
+            stat.ApplyInvincible();
+        }
+
+        public void RemoveInvincible()
+        {
+            stat.RemoveInvincible();
+        }
+        
+        public void ApplyInvincible(float duration)
+        {
+            stat.ApplyInvincible(duration);
+        }
+        
+    }
+
+    public enum PlayerStatusType
+    {
+        reloadDuration, dashDuration, curMagSize, maxHealth, currentHealth, moveSpeed, turnSpeed, dashSpeed, aimMoveSpeed, aimTurnSpeed
     }
 }
