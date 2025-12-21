@@ -78,7 +78,7 @@ namespace Player
         {
             ApplyGravity();
             CheckAnyState();
-            RotateCamera();
+            //RotateCamera();
             stateMachine.CurrentState.Update();
         }
 
@@ -123,31 +123,31 @@ namespace Player
             aimCamera.Priority = ON ? 20 : 10;
         }
         
-        public void RotateCamera()
-        {
-            if (mainCamera is null) return;
-            
-            var ray = mainCameraComponent.ScreenPointToRay(Input.mousePosition);
-            var groundPlane = new Plane(Vector3.up, transform.position);
-
-            if (!groundPlane.Raycast(ray, out float enter)) return;
-            
-            Vector3 point = ray.GetPoint(enter);
-            Vector3 direction = point - transform.position;
-            direction.y = 0;
-
-            if (!(direction.magnitude > 0.01f)) return;
-
-            float speedMultiplier = 1.0f;
-            speedMultiplier = Mathf.Clamp01(direction.magnitude / 10.0f);
-            
-            var targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation, 
-                targetRotation, 
-                Time.deltaTime * CameraTurnSpeed * speedMultiplier);
-
-        } 
+        // public void RotateCamera()
+        // {
+        //     if (mainCamera is null) return;
+        //     
+        //     var ray = mainCameraComponent.ScreenPointToRay(Input.mousePosition);
+        //     var groundPlane = new Plane(Vector3.up, transform.position);
+        //
+        //     if (!groundPlane.Raycast(ray, out float enter)) return;
+        //     
+        //     Vector3 point = ray.GetPoint(enter);
+        //     Vector3 direction = point - transform.position;
+        //     direction.y = 0;
+        //
+        //     if (!(direction.magnitude > 0.01f)) return;
+        //
+        //     float speedMultiplier = 1.0f;
+        //     speedMultiplier = Mathf.Clamp01(direction.magnitude / 10.0f);
+        //     
+        //     var targetRotation = Quaternion.LookRotation(direction);
+        //     transform.rotation = Quaternion.Slerp(
+        //         transform.rotation, 
+        //         targetRotation, 
+        //         Time.deltaTime * CameraTurnSpeed * speedMultiplier);
+        //
+        // } 
 
         public void TakeDamage(int amount)
         {

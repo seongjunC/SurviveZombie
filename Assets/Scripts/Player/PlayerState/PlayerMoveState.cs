@@ -5,13 +5,16 @@ namespace Player
     public class PlayerMoveState : PlayerStateBase
     {
         private static readonly int IsMove = Animator.StringToHash("isMove");
+        private Transform cameraTransform;
 
-        public PlayerMoveState(PlayerController player, PlayerStateMachine stateMachine) : 
-            base(player, stateMachine) { }
+        public PlayerMoveState(PlayerController player, PlayerStateMachine stateMachine) :
+            base(player, stateMachine)
+        {
+            if (Camera.main is not null) cameraTransform = Camera.main.transform;
+        }
         
         public override void Enter()
         {
-            Debug.Log("Move State Enter");
             player.animator.SetBool(IsMove, true);
         }
 
@@ -27,12 +30,28 @@ namespace Player
                 stateMachine.ChangeState(player.GetState<PlayerIdleState>());
                 return;
             }
+            Vector3 camForward = cameraTransform.forward;
+            Vector3 camRight = cameraTransform.right;
             
-            Vector3 moveDirection = (player.transform.forward * z + player.transform.right * x).normalized;
+            camForward.y = 0;
+            camRight.y = 0;
+            camForward.Normalize();
+            camRight.Normalize();
+            
+            Vector3 moveDirection = (camForward * z + camRight * x).normalized;
             
             Vector3 velocity = (moveDirection * player.moveSpeed) + player.GetVerticalVector();
             
             player.characterController.Move(velocity * Time.deltaTime);
+
+            if (moveDirection.magnitude >= 0.01f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+                player.transform.rotation = Quaternion.Slerp(
+                    player.transform.rotation, 
+                    targetRotation, 
+                    Time.deltaTime * player.turnSpeed);
+            }
             
         }
 
