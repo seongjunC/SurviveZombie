@@ -1,29 +1,56 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Player
 {
     public class PlayerStat : MonoBehaviour
     {
-        [Header("이동 설정")] 
-        public float moveSpeed = 5f;
+        [Header("이동 설정")] public float moveSpeed = 5f;
         public float turnSpeed = 30f;
-        public float CameraTurnSpeed = 10f;
         public float aimMoveSpeed = 2.5f;
         public float aimTurnSpeed = 0.5f;
         public float dashSpeed = 15.0f;
+
+        [Header("전투 설정")] private int _currentHealth;
+
+        public int currentHealth
+        {
+            get => _currentHealth;
+            private set
+            {
+                _currentHealth -= value;
+                OnHealthChanged?.Invoke(currentHealth);
+            }
+        }
         
-        [Header("전투 설정")]
-        public int currentHealth;
         public int maxHealth = 100;
         public float reloadDuration = 2.0f;
         public int maxMagSize = 30;
         public int curMagSize;
 
-        public bool isInvincible = false;
+        private bool _isInvincible = false;
+
+        public bool isInvincible
+        {
+            get => _isInvincible;
+            private set
+            {
+                _isInvincible = value;
+                OnInvincibleChanged?.Invoke(isInvincible? 1 : 0);
+            }
+        }
+        
         public float dashDuration = 0.5f;
 
         private Dictionary<PlayerStatusType, float> statusMap = new Dictionary<PlayerStatusType, float>(); 
+        private Dictionary<PlayerStatusType, Action<int>> statusEventMap = new Dictionary<PlayerStatusType, Action<int>>();
+        
+        private Action<int> OnHealthChanged;
+        private Action<int> OnMagSizeChanged;
+        private Action<int> OnInvincibleChanged;
+        
         public void Awake()
         {
             currentHealth = maxHealth;
@@ -39,6 +66,10 @@ namespace Player
             statusMap.TryAdd(PlayerStatusType.maxHealth, maxHealth);
             statusMap.TryAdd(PlayerStatusType.currentHealth, currentHealth);
             statusMap.TryAdd(PlayerStatusType.curMagSize, curMagSize);
+            
+            statusEventMap.TryAdd(PlayerStatusType.currentHealth, OnHealthChanged);
+            statusEventMap.TryAdd(PlayerStatusType.curMagSize, OnMagSizeChanged);
+            statusEventMap.TryAdd(PlayerStatusType.isInvincible, OnInvincibleChanged);
 
         }
 
@@ -81,6 +112,15 @@ namespace Player
             ApplyInvincible();
             
             Invoke(nameof(RemoveInvincible), duration);
+        }
+
+        public Action<int> GetStatEvent(PlayerStatusType type)
+        {
+            statusEventMap.TryGetValue(type, out var eventAction);
+            
+            if (eventAction is null) return null;
+
+            return eventAction;
         }
     }
 }

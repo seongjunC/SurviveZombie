@@ -194,11 +194,17 @@ namespace Player
         {
             stat.ApplyInvincible(duration);
         }
+
+        public void GetStatEvent(PlayerStatusType type)
+        {
+            stat.GetStatEvent(type);
+        }
         
     }
 
     public enum PlayerStatusType
     {
-        reloadDuration, dashDuration, curMagSize, maxHealth, currentHealth, moveSpeed, turnSpeed, dashSpeed, aimMoveSpeed, aimTurnSpeed
+        reloadDuration, dashDuration, curMagSize, maxHealth, currentHealth, 
+        moveSpeed, turnSpeed, dashSpeed, aimMoveSpeed, aimTurnSpeed, isInvincible
     }
 }
