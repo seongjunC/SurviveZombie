@@ -195,9 +195,14 @@ namespace Player
             stat.ApplyInvincible(duration);
         }
 
-        public void GetStatEvent(PlayerStatusType type)
+        public void SubscribeEvent(PlayerStatusType type, Action<int> EventHandler)
         {
-            stat.GetStatEvent(type);
+            stat.SubscribeEvent(type, EventHandler);
+        }
+
+        public void UnsubscribeEvent(PlayerStatusType type, Action<int> EventHandler)
+        {
+            stat.UnsubscribeEvent(type, EventHandler);
         }
         
     }

@@ -113,14 +113,28 @@ namespace Player
             
             Invoke(nameof(RemoveInvincible), duration);
         }
-
-        public Action<int> GetStatEvent(PlayerStatusType type)
+        
+        public void SubscribeEvent(PlayerStatusType type, Action<int> EventHandler)
         {
             statusEventMap.TryGetValue(type, out var eventAction);
             
-            if (eventAction is null) return null;
+            if (eventAction is null) return;
+            
+            eventAction += EventHandler;
+            
+            statusEventMap[type] = eventAction;
+        }
 
-            return eventAction;
+        public void UnsubscribeEvent(PlayerStatusType type, Action<int> EventHandler)
+        {
+            statusEventMap.TryGetValue(type, out var eventAction);
+            
+            if (eventAction is null) return;
+            
+            eventAction -= EventHandler;
+            
+            statusEventMap[type] = eventAction;
+            
         }
     }
 }

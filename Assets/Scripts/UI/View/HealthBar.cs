@@ -1,3 +1,5 @@
+using Monster;
+using Player;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,7 +10,25 @@ namespace UI
     {
         [SerializeField] private Slider slider;
         [SerializeField] private TextMeshProUGUI text;
+        [SerializeField] private PlayerController player;
+        [SerializeField] private MonsterController monster;
 
+        private HPPresenter _presenter;
+
+        private void OnEnable()
+        {
+            if (player is not null) _presenter = new HPPresenter(this, player);
+            else if (monster is not null) _presenter = new HPPresenter(this, monster);
+            else return;
+            
+            _presenter.Initialize();
+        }
+
+        private void OnDisable()
+        {
+            _presenter.Dispose();
+        }
+        
         public void SetHealth(int health, int maxHealth)
         {
             slider.maxValue = maxHealth;

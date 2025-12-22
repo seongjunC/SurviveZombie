@@ -175,8 +175,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da2c599de264c70a4ecac91e8804098, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  magImages: []
-  magText: {fileID: 0}
+  magImages:
+  - {fileID: 2131005197}
+  - {fileID: 525313108}
+  - {fileID: 1929986033}
+  - {fileID: 2053359712}
+  - {fileID: 1425447861}
+  magText: {fileID: 1628546917}
   blackColor: {r: 0, g: 0, b: 0, a: 1}
   whiteColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &457283984
@@ -559,7 +564,7 @@ GameObject:
   - component: {fileID: 525313109}
   - component: {fileID: 525313108}
   m_Layer: 5
-  m_Name: MagImage
+  m_Name: MagImage2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1956,7 +1961,7 @@ GameObject:
   - component: {fileID: 1425447862}
   - component: {fileID: 1425447861}
   m_Layer: 5
-  m_Name: MagImage
+  m_Name: MagImage5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2862,6 +2867,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1682212262}
+  - component: {fileID: 1682212263}
   m_Layer: 5
   m_Name: HP View
   m_TagString: Untagged
@@ -2890,6 +2896,20 @@ RectTransform:
   m_AnchoredPosition: {x: -400, y: 100}
   m_SizeDelta: {x: 600, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1682212263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1682212261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9fa0d7da6a04c3ebd38563611732e9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slider: {fileID: 522925787}
+  text: {fileID: 1438429441}
 --- !u!1 &1752758103
 GameObject:
   m_ObjectHideFlags: 0
@@ -3047,7 +3067,7 @@ GameObject:
   - component: {fileID: 1929986034}
   - component: {fileID: 1929986033}
   m_Layer: 5
-  m_Name: MagImage
+  m_Name: MagImage3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3288,7 +3308,7 @@ GameObject:
   - component: {fileID: 2053359713}
   - component: {fileID: 2053359712}
   m_Layer: 5
-  m_Name: MagImage
+  m_Name: MagImage4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3648,7 +3668,7 @@ GameObject:
   - component: {fileID: 2131005198}
   - component: {fileID: 2131005197}
   m_Layer: 5
-  m_Name: MagImage
+  m_Name: MagImage1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
