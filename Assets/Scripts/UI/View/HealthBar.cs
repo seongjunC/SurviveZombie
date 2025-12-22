@@ -1,3 +1,4 @@
+using Manager;
 using Monster;
 using Player;
 using TMPro;
@@ -10,18 +11,39 @@ namespace UI
     {
         [SerializeField] private Slider slider;
         [SerializeField] private TextMeshProUGUI text;
-        [SerializeField] private PlayerController player;
         [SerializeField] private MonsterController monster;
 
         private HPPresenter _presenter;
+        private PlayerController player;
 
         private void OnEnable()
         {
-            if (player is not null) _presenter = new HPPresenter(this, player);
-            else if (monster is not null) _presenter = new HPPresenter(this, monster);
+            if (monster is not null) Initialize(); //TODO : 몬스터도 연동
+
+            else
+            {
+                player = GlobalStateManager.Instance.player;
+                player.OnPlayerInit += Initialize;
+            }
+        }
+        
+        private void Initialize(){
+            if (player is not null)
+            {
+                Debug.Log("Player Init-> hp");
+                _presenter = new HPPresenter(this, player);
+                player.OnPlayerInit -= Initialize;
+            }
+            else if (monster is not null)
+            {
+                _presenter = new HPPresenter(this, monster);
+                //TODO
+            }
             else return;
             
             _presenter.Initialize();
+            
+
         }
 
         private void OnDisable()

@@ -2,6 +2,7 @@ using System;
 using Monster;
 using Player;
 using UI;
+using UnityEngine;
 
 public class HPPresenter
 {
@@ -32,6 +33,7 @@ public class HPPresenter
     private void PlayerInit()
     {
         maxHp = (int)_player.GetStatus(PlayerStatusType.maxHealth);
+        Debug.Log($"{maxHp} max");
         _player.SubscribeEvent(PlayerStatusType.currentHealth, UpdateView);
         
         UpdateView((int)_player.GetStatus(PlayerStatusType.currentHealth));
@@ -45,18 +47,13 @@ public class HPPresenter
     public void UpdateView(int hp)
     {
         _view.SetHealth(hp, maxHp);
+        Debug.Log($"hp : {hp}");
     }
 
     public void Dispose()
     {
         if (_player is not null) _player.UnsubscribeEvent(PlayerStatusType.currentHealth, UpdateView);
-        else if (_monster is not null) ;// TODO
-    }
-
-    private void EventSubscribe(ref Action<int> eventAction, Action<int> eventName)
-    {
-        eventAction -= eventName;
-        eventAction += eventName;
+        else if (_monster is not null) return;// TODO
     }
     
 }

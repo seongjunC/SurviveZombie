@@ -13,22 +13,47 @@ namespace Player
         public float aimTurnSpeed = 0.5f;
         public float dashSpeed = 15.0f;
 
-        [Header("전투 설정")] private int _currentHealth;
 
+        [Header("전투 설정")] 
+        [SerializeField] private int _currentHealth;
         public int currentHealth
         {
             get => _currentHealth;
             private set
             {
-                _currentHealth -= value;
-                OnHealthChanged?.Invoke(currentHealth);
+                _currentHealth = value;
+                
+                if (currentHealth <= 0) currentHealth = 0;
+                
+                if (statusEventMap.TryGetValue(PlayerStatusType.currentHealth, 
+                        out var eventAction))
+                {
+                    eventAction?.Invoke(currentHealth);
+
+                };
             }
         }
         
         public int maxHealth = 100;
         public float reloadDuration = 2.0f;
         public int maxMagSize = 30;
-        public int curMagSize;
+        [SerializeField] private int _curMagSize;
+
+        public int curMagSize
+        {
+            get => _curMagSize;
+            private set
+            {
+                if (value < 0) return;
+                _curMagSize = value;
+                
+                if (statusEventMap.TryGetValue(PlayerStatusType.curMagSize, 
+                        out var eventAction))
+                {
+                    eventAction?.Invoke(curMagSize);
+                };
+            }
+        }
 
         private bool _isInvincible = false;
 
@@ -38,7 +63,10 @@ namespace Player
             private set
             {
                 _isInvincible = value;
-                OnInvincibleChanged?.Invoke(isInvincible? 1 : 0);
+                if (statusEventMap.TryGetValue(PlayerStatusType.isInvincible, out var eventAction))
+                {
+                    eventAction?.Invoke(isInvincible? 1 : 0);
+                }
             }
         }
         
@@ -66,18 +94,19 @@ namespace Player
             statusMap.TryAdd(PlayerStatusType.maxHealth, maxHealth);
             statusMap.TryAdd(PlayerStatusType.currentHealth, currentHealth);
             statusMap.TryAdd(PlayerStatusType.curMagSize, curMagSize);
+            statusMap.TryAdd(PlayerStatusType.maxMagSize, maxMagSize);
             
             statusEventMap.TryAdd(PlayerStatusType.currentHealth, OnHealthChanged);
             statusEventMap.TryAdd(PlayerStatusType.curMagSize, OnMagSizeChanged);
             statusEventMap.TryAdd(PlayerStatusType.isInvincible, OnInvincibleChanged);
-
+            
         }
 
         public bool ApplyDamage(int damage)
         {
             if (currentHealth <= 0 || isInvincible) return false;
             
-            currentHealth -= Mathf.Max(0, currentHealth - damage);
+            currentHealth = Mathf.Max(0, currentHealth - damage);
             
             return currentHealth == 0;
         }
@@ -116,13 +145,12 @@ namespace Player
         
         public void SubscribeEvent(PlayerStatusType type, Action<int> EventHandler)
         {
-            statusEventMap.TryGetValue(type, out var eventAction);
-            
-            if (eventAction is null) return;
-            
-            eventAction += EventHandler;
-            
-            statusEventMap[type] = eventAction;
+            if (statusEventMap.TryGetValue(type, out var eventAction))
+            {
+                eventAction += EventHandler;
+                statusEventMap[type] = eventAction;
+                Debug.Log($"구독 완료 ");
+            }
         }
 
         public void UnsubscribeEvent(PlayerStatusType type, Action<int> EventHandler)

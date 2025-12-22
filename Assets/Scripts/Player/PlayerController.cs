@@ -33,6 +33,8 @@ namespace Player
 
         public PlayerStateMachine stateMachine { get; private set; }
         public Dictionary<Type, PlayerStateBase> _states;
+
+        public Action OnPlayerInit;
         
         
 
@@ -50,7 +52,12 @@ namespace Player
             _states.TryAdd(typeof(PlayerDeadState), new PlayerDeadState(this, stateMachine));
             _states.TryAdd(typeof(PlayerDashState), new PlayerDashState(this, stateMachine));
             _states.TryAdd(typeof(PlayerAimState), new PlayerAimState(this, stateMachine));
+            
+            OnPlayerInit?.Invoke();
+            Debug.Log("Player Init");
         }
+        
+
 
         private void Start()
         {
@@ -99,7 +106,6 @@ namespace Player
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 stateMachine.ChangeState(GetState<PlayerDashState>());
-                return;
             }
         }
 
@@ -107,6 +113,7 @@ namespace Player
         {
             mainCamera.Priority = ON ? 10 : 20;
             aimCamera.Priority = ON ? 20 : 10;
+            TakeDamage(5);
         }
         
         // public void RotateCamera()
@@ -157,11 +164,14 @@ namespace Player
                 "Bullet", gunObject.transform.position, transform.rotation);
             obj.transform.SetParent(SpawnedBullet);
             stat.ReduceMag();
+            
+            if (stat.curMagSize <= 0) needReload = true;
         }
 
         public void Reload()
         {
             stat.Reload();
+            needReload = false;
         }
         
 
@@ -210,6 +220,6 @@ namespace Player
     public enum PlayerStatusType
     {
         reloadDuration, dashDuration, curMagSize, maxHealth, currentHealth, 
-        moveSpeed, turnSpeed, dashSpeed, aimMoveSpeed, aimTurnSpeed, isInvincible
+        moveSpeed, turnSpeed, dashSpeed, aimMoveSpeed, aimTurnSpeed, isInvincible, maxMagSize
     }
 }
