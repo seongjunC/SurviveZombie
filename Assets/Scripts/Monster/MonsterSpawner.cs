@@ -30,7 +30,7 @@ namespace Monster
                 controller.OnDeath -= HandleMonsterDeath;
                 controller.OnDeath += HandleMonsterDeath;
                     
-                if (savedHp > 0) controller.currentHp = savedHp;
+                if (savedHp > 0) controller.InitMonster();
             }
         }
 

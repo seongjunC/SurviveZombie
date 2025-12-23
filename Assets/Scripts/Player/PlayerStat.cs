@@ -23,7 +23,7 @@ namespace Player
             {
                 _currentHealth = value;
                 
-                if (currentHealth <= 0) currentHealth = 0;
+                if (currentHealth < 0) currentHealth = 0;
                 
                 if (statusEventMap.TryGetValue(PlayerStatusType.currentHealth, 
                         out var eventAction))
@@ -78,6 +78,8 @@ namespace Player
         private Action<int> OnHealthChanged;
         private Action<int> OnMagSizeChanged;
         private Action<int> OnInvincibleChanged;
+        public Action OnStatReady;
+        public bool isStatReady;
         
         public void Awake()
         {
@@ -100,6 +102,9 @@ namespace Player
             statusEventMap.TryAdd(PlayerStatusType.curMagSize, OnMagSizeChanged);
             statusEventMap.TryAdd(PlayerStatusType.isInvincible, OnInvincibleChanged);
             
+            isStatReady = true;
+            Debug.Log("PlayerStat is ready");
+            OnStatReady?.Invoke();
         }
 
         public bool ApplyDamage(int damage)

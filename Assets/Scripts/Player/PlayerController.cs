@@ -35,11 +35,16 @@ namespace Player
         public Dictionary<Type, PlayerStateBase> _states;
 
         public Action OnPlayerInit;
+
+        public bool PlayerReady;
+        public bool PlayerStatReady;
+        
         
         
 
         private void Awake()
         {
+            if(!stat.isStatReady) stat.OnStatReady += StatReady;
             characterController = GetComponent<CharacterController>();
             animator = GetComponent<Animator>();
             mainCameraComponent = Camera.main;
@@ -52,9 +57,25 @@ namespace Player
             _states.TryAdd(typeof(PlayerDeadState), new PlayerDeadState(this, stateMachine));
             _states.TryAdd(typeof(PlayerDashState), new PlayerDashState(this, stateMachine));
             _states.TryAdd(typeof(PlayerAimState), new PlayerAimState(this, stateMachine));
-            
-            OnPlayerInit?.Invoke();
-            Debug.Log("Player Init");
+
+            PlayerReady = true;
+            PlayerCheck();
+
+        }
+
+        public void PlayerCheck()
+        {
+            if (PlayerReady && PlayerStatReady)
+            {
+                OnPlayerInit?.Invoke();
+            }
+            else return;
+        }
+
+        public void StatReady()
+        {
+            PlayerStatReady = true;
+            PlayerCheck();
         }
         
 
@@ -113,34 +134,7 @@ namespace Player
         {
             mainCamera.Priority = ON ? 10 : 20;
             aimCamera.Priority = ON ? 20 : 10;
-            TakeDamage(5);
         }
-        
-        // public void RotateCamera()
-        // {
-        //     if (mainCamera is null) return;
-        //     
-        //     var ray = mainCameraComponent.ScreenPointToRay(Input.mousePosition);
-        //     var groundPlane = new Plane(Vector3.up, transform.position);
-        //
-        //     if (!groundPlane.Raycast(ray, out float enter)) return;
-        //     
-        //     Vector3 point = ray.GetPoint(enter);
-        //     Vector3 direction = point - transform.position;
-        //     direction.y = 0;
-        //
-        //     if (!(direction.magnitude > 0.01f)) return;
-        //
-        //     float speedMultiplier = 1.0f;
-        //     speedMultiplier = Mathf.Clamp01(direction.magnitude / 10.0f);
-        //     
-        //     var targetRotation = Quaternion.LookRotation(direction);
-        //     transform.rotation = Quaternion.Slerp(
-        //         transform.rotation, 
-        //         targetRotation, 
-        //         Time.deltaTime * CameraTurnSpeed * speedMultiplier);
-        //
-        // } 
 
         public void TakeDamage(int amount)
         {

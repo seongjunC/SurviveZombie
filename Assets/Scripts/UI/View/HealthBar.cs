@@ -14,11 +14,12 @@ namespace UI
         [SerializeField] private MonsterController monster;
 
         private HPPresenter _presenter;
-        private PlayerController player;
+        [SerializeField] private PlayerController player;
 
         private void OnEnable()
         {
-            if (monster is not null) Initialize(); //TODO : 몬스터도 연동
+            if (monster is not null) Initialize(); //TODO : 몬스터도 연동\]
+            else if (player is not null) Initialize();
 
             else
             {
@@ -37,13 +38,10 @@ namespace UI
             else if (monster is not null)
             {
                 _presenter = new HPPresenter(this, monster);
-                //TODO
             }
             else return;
             
             _presenter.Initialize();
-            
-
         }
 
         private void OnDisable()

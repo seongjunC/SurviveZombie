@@ -52,7 +52,7 @@ namespace Monster.MonsterState
         private void Attack()
         {
             lastAttack = Time.time;
-            controller.animator.SetTrigger(attack);
+            //controller.animator.SetTrigger(attack);
         }
 
         public override void Exit()

@@ -41,19 +41,21 @@ public class HPPresenter
 
     private void MonsterInit()
     {
-        // TODO : 몬스터 구현 후 수정
+        maxHp = _monster.maxHp;
+        _monster.OnHealthChanged += UpdateView;
+        
+        UpdateView(_monster.currentHp);
     }
 
     public void UpdateView(int hp)
     {
         _view.SetHealth(hp, maxHp);
-        Debug.Log($"hp : {hp}");
     }
 
     public void Dispose()
     {
         if (_player is not null) _player.UnsubscribeEvent(PlayerStatusType.currentHealth, UpdateView);
-        else if (_monster is not null) return;// TODO
+        else if (_monster is not null) _monster.OnHealthChanged -= UpdateView;
     }
     
 }
