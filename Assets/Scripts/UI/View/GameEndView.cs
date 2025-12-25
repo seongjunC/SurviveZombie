@@ -12,7 +12,7 @@ namespace UI
         [SerializeField] private GameObject GameClearPanel;
         [SerializeField] private Image GameEndPanel;
         
-        private Color clearColor = Color.cyan;
+        private Color clearColor = new Color(0,1,1,0.4f);
         private Color gameOverColor = new Color(1,0,0,0.4f);
 
 
