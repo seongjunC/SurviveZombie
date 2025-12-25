@@ -17,7 +17,7 @@ namespace Player
         [Header("카메라 설정")]
         public CinemachineCamera mainCamera;
         public CinemachineCamera aimCamera;
-        private Camera mainCameraComponent;
+        public CinemachineBrain mainCameraComponent;
         
         public GameObject gunObject;
         public Transform SpawnedBullet;
@@ -47,7 +47,6 @@ namespace Player
             if(!stat.isStatReady) stat.OnStatReady += StatReady;
             characterController = GetComponent<CharacterController>();
             animator = GetComponent<Animator>();
-            mainCameraComponent = Camera.main;
             _states = new Dictionary<Type, PlayerStateBase>();
             
             stateMachine = new PlayerStateMachine();

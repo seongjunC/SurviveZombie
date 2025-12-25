@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using DefaultNamespace;
+using Manager;
 using Monster.MonsterState;
+using Player;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -42,6 +44,8 @@ namespace Monster
 		public GameObject healthBar;
         
         public Action<int> OnHealthChanged;
+        
+        public PlayerController player;
 
         public void Awake()
         {
@@ -52,6 +56,7 @@ namespace Monster
             
             GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
             if (playerObj is not null) target = playerObj.transform;
+            
 
             stateMachine = new MonsterStateMachine();
             states = new Dictionary<Type, MonsterStateBase>();
@@ -69,6 +74,8 @@ namespace Monster
         {
             currentHp = maxHp;
             
+            player = GlobalStateManager.Instance.player;
+            
             stateMachine.Initialize(GetState<MonsterIdleState>());
             
             navMeshAgent.enabled = true;
@@ -81,9 +88,14 @@ namespace Monster
         {
             if(currentHp > 0)
                 stateMachine.CurrentState.Update();
-
-            healthBar.transform.rotation = target.rotation;
         }
+
+
+		public void LateUpdate()
+        {
+            healthBar.transform.rotation = 
+                player.mainCameraComponent.transform.rotation;
+		}
 
         public T GetState<T>() where T : MonsterStateBase
         {

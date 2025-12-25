@@ -1198,6 +1198,7 @@ MonoBehaviour:
   stat: {fileID: 1023226372}
   mainCamera: {fileID: 1477191589}
   aimCamera: {fileID: 2073292002}
+  mainCameraComponent: {fileID: 0}
   gunObject: {fileID: 722118415}
   SpawnedBullet: {fileID: 1247841845}
   PlayerReady: 0
