@@ -8,7 +8,8 @@ namespace Player
         private static readonly int InputX = Animator.StringToHash("InputX");
         private static readonly int InputY = Animator.StringToHash("InputY");
         private Transform cameraTransform;
-
+        
+        
         public PlayerAimState(PlayerController player, PlayerStateMachine stateMachine) : base(player, stateMachine)
         {
             if (Camera.main is not null) cameraTransform = Camera.main.transform;
@@ -36,6 +37,7 @@ namespace Player
             }
             HandleMovement();
         }
+        
         
         private void HandleMovement()
         {

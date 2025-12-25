@@ -155,7 +155,7 @@ namespace Player
                 return;
             }
             GameObject obj = ObjectPoolManager.Instance.SpawnObject(
-                "Bullet", gunObject.transform.position, transform.rotation);
+                "Bullet", gunObject.transform.position, aimCamera.transform.rotation);
             obj.transform.SetParent(SpawnedBullet);
             stat.ReduceMag();
             
@@ -208,7 +208,7 @@ namespace Player
         {
             stat.UnsubscribeEvent(type, EventHandler);
         }
-        
+
     }
 
     public enum PlayerStatusType

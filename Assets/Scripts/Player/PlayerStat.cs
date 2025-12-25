@@ -103,7 +103,6 @@ namespace Player
             statusEventMap.TryAdd(PlayerStatusType.isInvincible, OnInvincibleChanged);
             
             isStatReady = true;
-            Debug.Log("PlayerStat is ready");
             OnStatReady?.Invoke();
         }
 
