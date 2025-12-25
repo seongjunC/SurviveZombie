@@ -38,10 +38,12 @@ namespace Player
         public Dictionary<Type, PlayerStateBase> _states;
 
         public Action OnPlayerInit;
+        public Action OnPlayerDead;
+        public Action OnGameClear;
 
         private bool PlayerReady;
         private bool PlayerStatReady;
-
+        
         private Vector3 _aimVector = new Vector3(0.2f,1.8f,0.6f); 
         
         
