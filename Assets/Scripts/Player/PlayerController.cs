@@ -26,6 +26,9 @@ namespace Player
         private float verticalVelocity;
         
         private bool needReload;
+
+        [Header("UI 설정")]
+        [SerializeField] private GameObject uiUnderBar;
         
         
         public CharacterController characterController { get; private set; }
@@ -36,8 +39,10 @@ namespace Player
 
         public Action OnPlayerInit;
 
-        public bool PlayerReady;
-        public bool PlayerStatReady;
+        private bool PlayerReady;
+        private bool PlayerStatReady;
+
+        private Vector3 _aimVector = new Vector3(0.2f,1.8f,0.6f); 
         
         
         
@@ -67,6 +72,7 @@ namespace Player
             if (PlayerReady && PlayerStatReady)
             {
                 OnPlayerInit?.Invoke();
+                uiUnderBar.SetActive(true);
             }
             else return;
         }
@@ -93,6 +99,12 @@ namespace Player
             CheckAnyState();
             //RotateCamera();
             stateMachine.CurrentState.Update();
+        }
+        
+        public void LateUpdate()
+        {
+            gunObject.transform.position = transform.position + _aimVector;
+            gunObject.transform.rotation = mainCamera.transform.rotation;
         }
 
         private void ApplyGravity()
@@ -133,6 +145,7 @@ namespace Player
         {
             mainCamera.Priority = ON ? 10 : 20;
             aimCamera.Priority = ON ? 20 : 10;
+            
         }
 
         public void TakeDamage(int amount)

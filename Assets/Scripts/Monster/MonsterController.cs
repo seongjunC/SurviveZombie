@@ -95,6 +95,7 @@ namespace Monster
         {
             healthBar.transform.rotation = 
                 player.mainCameraComponent.transform.rotation;
+            
 		}
 
         public T GetState<T>() where T : MonsterStateBase

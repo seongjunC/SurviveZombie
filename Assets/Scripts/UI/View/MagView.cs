@@ -21,15 +21,15 @@ namespace UI
         public void OnEnable()
         {
             player = GlobalStateManager.Instance.player;
-            player.OnPlayerInit += Initialize;
             
+            Initialize();
             foreach (var image in magImages) image.color = whiteColor;
         }
 
         private void Initialize()
         {
             _presenter = new MagPresenter(this, player);
-            player.OnPlayerInit -= Initialize;
+
             
             _presenter.Initialize();
         }
