@@ -40,6 +40,7 @@ namespace Player
         public Action OnPlayerInit;
         public Action OnPlayerDead;
         public Action OnGameClear;
+        //TODO : GameClear 추후 설정
 
         private bool PlayerReady;
         private bool PlayerStatReady;
@@ -99,14 +100,12 @@ namespace Player
         {
             ApplyGravity();
             CheckAnyState();
-            //RotateCamera();
             stateMachine.CurrentState.Update();
         }
         
         public void LateUpdate()
         {
-            gunObject.transform.position = transform.position + _aimVector;
-            gunObject.transform.rotation = mainCamera.transform.rotation;
+            gunObject.transform.rotation = transform.rotation;
         }
 
         private void ApplyGravity()

@@ -16,7 +16,8 @@ namespace Player
             player.animator.SetTrigger(Dead);
             player.characterController.enabled = false;
             
-            //TODO : 게임 오버 실행
+            player.OnPlayerDead?.Invoke();
+            Time.timeScale = 0;
         }
 
         public override void Update()

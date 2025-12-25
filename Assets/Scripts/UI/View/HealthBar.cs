@@ -18,7 +18,7 @@ namespace UI
 
         private void OnEnable()
         {
-            if (monster is not null) Initialize(); //TODO : 몬스터도 연동\]
+            if (monster is not null) Initialize(); 
             else if (player is not null) Initialize();
 
             else

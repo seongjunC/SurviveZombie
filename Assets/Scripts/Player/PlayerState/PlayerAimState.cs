@@ -18,6 +18,7 @@ namespace Player
         public override void Enter()
         {
             player.animator.SetBool(isAim, true);
+            //TODO : player 애니메이터 설정
             
             player.SetAimCamera(true);
         }
@@ -77,8 +78,6 @@ namespace Player
             
             player.animator.SetFloat(InputX, 0, 0.1f, Time.deltaTime);
             player.animator.SetFloat(InputY, 0, 0.1f, Time.deltaTime);
-            
-            // TODO : 카메라 줌 아웃, 조준 UI 비활성화 등
         }
     }
 }
