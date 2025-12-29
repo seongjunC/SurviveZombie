@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Object
 {
+    [RequireComponent(typeof(Rigidbody))]
     public class Bullet : MonoBehaviour, IPooledObject
     {
         public float speed = 20f;
@@ -13,8 +14,6 @@ namespace Object
         public void OnObjectSpawn()
         {
             rb ??= GetComponent<Rigidbody>();
-            
-            Debug.Log("OnObjectSpawn");
             
             rb.linearVelocity = transform.forward * speed;
             rb.angularVelocity = Vector3.zero;
@@ -27,7 +26,6 @@ namespace Object
 
         public void Deactivate()
         {
-            Debug.Log("Deactivate");
             ObjectPoolManager.Instance.ReturnObjectToPool(gameObject);
             gameObject.SetActive(false);
         }
@@ -41,7 +39,6 @@ namespace Object
         {
             if (other.CompareTag("Enemy"))
             {
-                Debug.Log("OnTriggerEnter");
                 DamageToEnemy(other);
                 Deactivate();
             }

@@ -1,5 +1,8 @@
 using Manager;
 using Player;
+using Room;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace UI.Presenter
 {
@@ -19,6 +22,22 @@ namespace UI.Presenter
         {
             _player.OnPlayerDead += _view.ShowGameOverPanel;
             _player.OnGameClear += _view.ShowGameClearPanel;
+            _view.RestartButtonAction += BackToMainMenu;
+        }
+        
+        private void BackToMainMenu()
+        {
+            _player.OnPlayerDead -= _view.ShowGameOverPanel;
+            _player.OnGameClear -= _view.ShowGameClearPanel;
+            _view.RestartButtonAction -= BackToMainMenu;
+
+            Time.timeScale = 1f;
+
+            _view.ClosePanel();
+            
+            RoomManager.Instance.Initialize();
+            
+            SceneManager.LoadScene("GameStartScene");
         }
     }
 }

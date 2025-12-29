@@ -75,6 +75,7 @@ namespace Player
             if (PlayerReady && PlayerStatReady)
             {
                 OnPlayerInit?.Invoke();
+                stat.OnStatReady -= StatReady;
                 uiUnderBar.SetActive(true);
             }
             else return;
@@ -185,6 +186,20 @@ namespace Player
         public Vector3 GetVerticalVector()
         {
             return new Vector3(0, verticalVelocity, 0);
+        }
+
+        public Vector3 GetCameraDirection(float x, float z)
+        {
+            var cameraTransform = Camera.main?.transform;
+            Vector3 camForward = cameraTransform.forward;
+            Vector3 camRight = cameraTransform.right;
+            
+            camForward.y = 0;
+            camRight.y = 0;
+            camForward.Normalize();
+            camRight.Normalize();
+            
+            return (camForward * z + camRight * x).normalized;
         }
 
         public T GetState<T>() where T : PlayerStateBase

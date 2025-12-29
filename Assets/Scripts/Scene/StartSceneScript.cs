@@ -1,16 +1,46 @@
+using UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class StartSceneScript : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private StartSceneView startSceneView;
+
+    public void Start()
     {
-        
+        startSceneView.PressStartButton += PressStartButton;
+        startSceneView.PressSettingButton += PressSettingButton;
+        startSceneView.PressExitButton += PressExitButton;
+        startSceneView.Init();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void PressStartButton()
     {
-        
+        SceneManager.LoadScene("GameScene");
+    }
+
+    private void PressSettingButton()
+    { 
+        startSceneView.OpenPanel(true);
+    }
+
+    public void BackToMainMenu()
+    {
+        startSceneView.OpenPanel(false);
+    }
+    
+    public void SettingMenuOpen()
+    {
+        //TODO
+    }
+
+    private void PressExitButton()
+    {
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+        #else
+        Application.Quit();
+        #endif
     }
 }

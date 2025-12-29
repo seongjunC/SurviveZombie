@@ -27,9 +27,11 @@ namespace Monster
                 OnHealthChanged?.Invoke(currentHp);
             }
         }
-        public float detectRange = 15f;
+        public float detectRange = 5f;
         public float attackRange = 2f;
         public float moveSpeed = 4f;
+        public int attackDamage = 25;
+        [SerializeField] private float despawnTime = 2f;
     
         public Transform target;
         public Vector3 startPos;
@@ -114,7 +116,7 @@ namespace Monster
                 stateMachine.ChangeState(GetState<MonsterDeadState>());
                 OnDeath?.Invoke();
                 
-                Invoke(nameof(Deactivate), 5f);
+                Invoke(nameof(Deactivate), despawnTime);
             }
         }
 

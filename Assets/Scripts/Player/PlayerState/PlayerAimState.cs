@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Player
@@ -9,7 +10,8 @@ namespace Player
         private static readonly int InputY = Animator.StringToHash("InputY");
         private Transform cameraTransform;
         
-        
+        private Coroutine rotateCoroutine;
+
         public PlayerAimState(PlayerController player, PlayerStateMachine stateMachine) : base(player, stateMachine)
         {
             if (Camera.main is not null) cameraTransform = Camera.main.transform;
@@ -19,6 +21,9 @@ namespace Player
         {
             player.animator.SetBool(isAim, true);
             //TODO : player 애니메이터 설정
+            
+            if (rotateCoroutine is not null) player.StopCoroutine(rotateCoroutine);
+            rotateCoroutine = player.StartCoroutine(RotateCameraForward());
             
             player.SetAimCamera(true);
         }
@@ -69,6 +74,37 @@ namespace Player
             
             player.animator.SetFloat(InputX, x, 0.1f, Time.deltaTime);
             player.animator.SetFloat(InputY, z, 0.1f, Time.deltaTime);
+        }
+
+        private IEnumerator RotateCameraForward()
+        {
+            if (cameraTransform == null) yield break;
+
+            // 목표 회전값 계산 (y축만 고려)
+            Vector3 camForward = cameraTransform.forward;
+            camForward.y = 0;
+            if (camForward == Vector3.zero) camForward = player.transform.forward; // 예외 처리
+
+            Quaternion startRotation = player.transform.rotation;
+            Quaternion targetRotation = Quaternion.LookRotation(camForward);
+
+            float time = 0f;
+            float duration = 0.2f; // 회전하는 데 걸리는 시간 (빠르게 정렬)
+
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+                float t = time / duration;
+                
+                // 부드러운 회전 적용
+                player.transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
+                yield return null;
+            }
+
+            // 확실하게 끝 맞춤
+            player.transform.rotation = targetRotation;
+            rotateCoroutine = null;
+
         }
 
         public override void Exit()

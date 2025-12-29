@@ -52,6 +52,7 @@ namespace Monster.MonsterState
         private void Attack()
         {
             lastAttack = Time.time;
+            controller.player.TakeDamage(controller.attackDamage);
             //controller.animator.SetTrigger(attack);
         }
 

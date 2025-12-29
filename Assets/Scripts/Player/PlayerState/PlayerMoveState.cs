@@ -5,12 +5,10 @@ namespace Player
     public class PlayerMoveState : PlayerStateBase
     {
         private static readonly int IsMove = Animator.StringToHash("isMove");
-        private Transform cameraTransform;
 
         public PlayerMoveState(PlayerController player, PlayerStateMachine stateMachine) :
             base(player, stateMachine)
         {
-            if (Camera.main is not null) cameraTransform = Camera.main.transform;
         }
         
         public override void Enter()
@@ -30,15 +28,7 @@ namespace Player
                 stateMachine.ChangeState(player.GetState<PlayerIdleState>());
                 return;
             }
-            Vector3 camForward = cameraTransform.forward;
-            Vector3 camRight = cameraTransform.right;
-            
-            camForward.y = 0;
-            camRight.y = 0;
-            camForward.Normalize();
-            camRight.Normalize();
-            
-            Vector3 moveDirection = (camForward * z + camRight * x).normalized;
+            var moveDirection = player.GetCameraDirection(x, z);
             
             Vector3 velocity = (moveDirection * player.GetStatus(PlayerStatusType.moveSpeed)) + player.GetVerticalVector();
             

@@ -153,7 +153,6 @@ namespace Player
             {
                 eventAction += EventHandler;
                 statusEventMap[type] = eventAction;
-                Debug.Log($"구독 완료 ");
             }
         }
 
