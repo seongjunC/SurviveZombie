@@ -13,7 +13,7 @@ namespace UI
         [SerializeField] private GameObject GameOverPanel;
         [SerializeField] private GameObject GameClearPanel;
         [SerializeField] private Image GameEndPanel;
-        [SerializeField]
+        [SerializeField] private Button ExitButton;
         //[SerializeField] private Button RestartButton;
         
         // TODO : 재시작 버튼 추가
@@ -31,6 +31,8 @@ namespace UI
             _presenter = new GameEndPresenter(this);
             
             //RestartButton.onClick.AddListener(RestartButtonAction);
+            
+            ExitButton.onClick.AddListener(ExitButtonAction);
             
             ClosePanel();
         }
@@ -54,6 +56,15 @@ namespace UI
         public void ClosePanel()
         {
             GameEndPanel.gameObject.SetActive(false);
+        }
+
+        public void ExitButtonAction()
+        {
+            #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+            #else
+            Application.Quit();
+            #endif
         }
     }
 }

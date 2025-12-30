@@ -12,6 +12,8 @@ namespace Monster
 {
     public class MonsterController : MonoBehaviour, IPooledObject
     {
+        private static readonly int Hit = Animator.StringToHash("Hit");
+
         [Header("전투 스탯")] 
         public int maxHp = 100;
         private int _currentHp;
@@ -28,7 +30,7 @@ namespace Monster
             }
         }
         public float detectRange = 5f;
-        public float attackRange = 2f;
+        public float attackRange = 1f;
         public float moveSpeed = 4f;
         public int attackDamage = 25;
         [SerializeField] private float despawnTime = 2f;
@@ -49,12 +51,16 @@ namespace Monster
         
         public PlayerController player;
 
+        private ZombieAttackController attackCont;
+
         public void Awake()
         {
             navMeshAgent = GetComponent<NavMeshAgent>();
             animator = GetComponent<Animator>();
+            attackCont = GetComponent<ZombieAttackController>();
             startPos = transform.position;
             currentHp = maxHp;
+
             
             GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
             if (playerObj is not null) target = playerObj.transform;
@@ -68,7 +74,8 @@ namespace Monster
             states.TryAdd(typeof(MonsterDeadState), new MonsterDeadState(stateMachine, this));
             states.TryAdd(typeof(MonsterIdleState), new MonsterIdleState(stateMachine, this));
             states.TryAdd(typeof(MonsterReturnState), new MonsterReturnState(stateMachine, this));
-
+            states.TryAdd(typeof(MonsterHitState), new MonsterHitState(stateMachine, this));
+            
             healthBar.SetActive(true);
         }
         
@@ -118,11 +125,16 @@ namespace Monster
                 
                 Invoke(nameof(Deactivate), despawnTime);
             }
+            else
+            {
+                animator.SetTrigger(Hit);
+                stateMachine.ChangeState(GetState<MonsterChaseState>());
+            }
         }
 
-        public void InitMonster()
+        public void InitMonster(int savedHp = 0)
         {
-            currentHp = maxHp;
+            currentHp = savedHp > 0 ? savedHp : maxHp;
         }
 
         private void Deactivate()

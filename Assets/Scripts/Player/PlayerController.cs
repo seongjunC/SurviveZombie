@@ -21,6 +21,8 @@ namespace Player
         
         public GameObject gunObject;
         public Transform SpawnedBullet;
+        [SerializeField] private GameObject idleGun;
+        [SerializeField] private GameObject aimGun;
         
         private float gravity = -9.81f;
         private float verticalVelocity;
@@ -147,7 +149,8 @@ namespace Player
         {
             mainCamera.Priority = ON ? 10 : 20;
             aimCamera.Priority = ON ? 20 : 10;
-            
+            idleGun.SetActive(!ON);
+            aimGun.SetActive(ON);
         }
 
         public void TakeDamage(int amount)

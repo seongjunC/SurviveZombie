@@ -10,12 +10,10 @@ namespace Room
         [SerializeField] private RoomController RoomB;
 
         [Header("문 세팅")]
-        [SerializeField] private GameObject doorPos;
+        [SerializeField] private DoorComponent[] doors;
         private readonly float openAngle = 90f;
         private readonly float closeAngle = 0f;
-        private float rotationSpeed = 360f;
-        private Coroutine rotateCoroutine;
-
+        
         private bool isOpen = false;
 
         private void OnTriggerEnter(Collider other)
@@ -29,7 +27,6 @@ namespace Room
 
 
             Open(dot < 0f);
-            
         }
 
         private void OnTriggerExit(Collider other)
@@ -37,8 +34,13 @@ namespace Room
             if (other.transform.tag is not "Player") return;
             
             if(!isOpen) return;
-            
-            Close();
+
+            isOpen = false;
+
+            foreach (var door in doors)
+            {
+                door.RotateDoor(closeAngle);
+            }
         }
 
         private void Open(bool IsBack)
@@ -46,51 +48,15 @@ namespace Room
             isOpen = true;
             
             RoomManager.Instance.EnterRoom(IsBack ? RoomA : RoomB);
-            
-            RotateDoor(IsBack ? -openAngle : openAngle);
-        }
 
-        private void Close()
-        {
-            isOpen = false;
-            
-            RotateDoor(closeAngle);
-        }
-
-        private void RotateDoor(float angle)
-        {
-            if(rotateCoroutine is not null) StopCoroutine(rotateCoroutine);
-
-            rotateCoroutine = StartCoroutine(RotateCoroutine(angle));
-        }
-
-        private IEnumerator RotateCoroutine(float targetAngle)
-        {
-            
-            Quaternion startRotation = doorPos.transform.localRotation;
-            Quaternion targetRotation = Quaternion.Euler(0f, targetAngle, 0f);
-            float angleDifference = Quaternion.Angle(startRotation, targetRotation);
-            
-            if (angleDifference < 0.1f)
+            foreach (var door in doors)
             {
-                doorPos.transform.localRotation = targetRotation;
-                rotateCoroutine = null;
-                yield break;
+                door.RotateDoor(IsBack ? -openAngle : openAngle);
             }
-            
-            float duration = angleDifference / rotationSpeed;
-            
-            float t = 0f;
-            while (t < 1f)
-            {
-                t += Time.deltaTime / duration;
-                
-                doorPos.transform.localRotation = Quaternion.Slerp(startRotation, targetRotation, t);
-                yield return null;
-            }
-
-            doorPos.transform.localRotation = targetRotation;
-            rotateCoroutine = null;
         }
+
+
+
+
     }
 }

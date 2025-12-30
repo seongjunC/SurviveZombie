@@ -38,6 +38,7 @@ namespace Player
 
             if (Input.GetMouseButtonUp(1))
             {
+                player.animator.SetBool(isAim, false);
                 stateMachine.ChangeState(player.GetState<PlayerIdleState>());
                 return;
             }
@@ -109,7 +110,6 @@ namespace Player
 
         public override void Exit()
         {
-            player.animator.SetBool(isAim, false);
             player.SetAimCamera(false);
             
             player.animator.SetFloat(InputX, 0, 0.1f, Time.deltaTime);

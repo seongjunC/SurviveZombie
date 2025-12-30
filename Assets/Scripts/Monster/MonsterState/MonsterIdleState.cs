@@ -13,7 +13,7 @@ namespace Monster.MonsterState
 
         public override void Enter()
         {
-            //controller.animator.SetBool(IsMoving, false);
+            controller.animator.SetBool(IsMoving, false);
             controller.navMeshAgent.isStopped = true;
         }
 
