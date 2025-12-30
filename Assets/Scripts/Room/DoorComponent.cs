@@ -8,6 +8,7 @@ namespace Room
         [SerializeField] private GameObject doorPos;
         private Coroutine rotateCoroutine;
         [SerializeField] private float rotationSpeed = 360f;
+        [SerializeField] private bool isRight = false;
         
 
         public void RotateDoor(float angle)
@@ -20,8 +21,9 @@ namespace Room
         
         private IEnumerator RotateCoroutine(float targetAngle)
         {
+            if (isRight) targetAngle = -targetAngle;
             Quaternion startRotation = doorPos.transform.localRotation;
-            Quaternion targetRotation = Quaternion.Euler(0f, targetAngle, 0f);
+            Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetAngle);
             float angleDifference = Quaternion.Angle(startRotation, targetRotation);
             
             if (angleDifference < 0.1f)

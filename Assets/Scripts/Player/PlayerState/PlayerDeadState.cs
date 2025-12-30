@@ -18,9 +18,6 @@ namespace Player
             
             player.OnPlayerDead?.Invoke();
             Time.timeScale = 0;
-            
-            Cursor.lockState = CursorLockMode.Confined;
-            Cursor.visible = true;
         }
 
         public override void Update()

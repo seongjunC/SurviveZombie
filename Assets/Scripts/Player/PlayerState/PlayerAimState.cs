@@ -80,29 +80,26 @@ namespace Player
         private IEnumerator RotateCameraForward()
         {
             if (cameraTransform == null) yield break;
-
-            // 목표 회전값 계산 (y축만 고려)
+            
             Vector3 camForward = cameraTransform.forward;
             camForward.y = 0;
-            if (camForward == Vector3.zero) camForward = player.transform.forward; // 예외 처리
+            if (camForward == Vector3.zero) camForward = player.transform.forward;
 
             Quaternion startRotation = player.transform.rotation;
             Quaternion targetRotation = Quaternion.LookRotation(camForward);
 
             float time = 0f;
-            float duration = 0.2f; // 회전하는 데 걸리는 시간 (빠르게 정렬)
+            float duration = 0.2f;
 
             while (time < duration)
             {
                 time += Time.deltaTime;
                 float t = time / duration;
                 
-                // 부드러운 회전 적용
                 player.transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
                 yield return null;
             }
-
-            // 확실하게 끝 맞춤
+            
             player.transform.rotation = targetRotation;
             rotateCoroutine = null;
 

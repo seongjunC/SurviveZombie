@@ -19,19 +19,21 @@ namespace Room
         private void OnTriggerEnter(Collider other)
         {
             Debug.Log(other.transform.tag);
-            if (other.transform.tag is not "Player") return;
+            if (!other.CompareTag("Player")) return;
             
             if(isOpen) return;
+            
+            
             Vector3 Location = transform.position - other.transform.position;
-            float dot = Vector3.Dot(Location, transform.forward);
-
-
+            float dot = Vector3.Dot(Location, transform.up);
+            Debug.Log($"{transform.localPosition} {other.transform.position}, {dot}");
+            Debug.Log(dot<0f);
             Open(dot < 0f);
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.transform.tag is not "Player") return;
+            if (!other.CompareTag("Player")) return;
             
             if(!isOpen) return;
 
@@ -47,7 +49,8 @@ namespace Room
         {
             isOpen = true;
             
-            RoomManager.Instance.EnterRoom(IsBack ? RoomA : RoomB);
+            Debug.Log(IsBack);
+            RoomManager.Instance.EnterRoom(IsBack ? RoomB : RoomA);
 
             foreach (var door in doors)
             {

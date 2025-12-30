@@ -31,6 +31,7 @@ namespace Player
 
         [Header("UI 설정")]
         [SerializeField] private GameObject uiUnderBar;
+        [SerializeField] private GameObject aimCrosshair;
         
         
         public CharacterController characterController { get; private set; }
@@ -42,7 +43,6 @@ namespace Player
         public Action OnPlayerInit;
         public Action OnPlayerDead;
         public Action OnGameClear;
-        //TODO : GameClear 추후 설정
 
         private bool PlayerReady;
         private bool PlayerStatReady;
@@ -151,6 +151,8 @@ namespace Player
             aimCamera.Priority = ON ? 20 : 10;
             idleGun.SetActive(!ON);
             aimGun.SetActive(ON);
+            
+            if (aimCrosshair is not null) aimCrosshair.SetActive(ON);
         }
 
         public void TakeDamage(int amount)

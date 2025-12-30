@@ -43,6 +43,9 @@ namespace UI
             GameOverPanel.SetActive(true);
             GameClearPanel.SetActive(false);
             GameEndPanel.color = gameOverColor;
+                        
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
         public void ShowGameClearPanel()
@@ -51,6 +54,9 @@ namespace UI
             GameOverPanel.SetActive(false);
             GameClearPanel.SetActive(true);
             GameEndPanel.color = clearColor;
+            
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
         public void ClosePanel()
