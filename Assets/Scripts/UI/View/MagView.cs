@@ -18,7 +18,7 @@ namespace UI
         
         private MagPresenter _presenter;
 
-        public void OnEnable()
+        public void Start()
         {
             player = GlobalStateManager.Instance.player;
             

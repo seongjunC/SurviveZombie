@@ -1,3 +1,4 @@
+using Manager;
 using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,11 +14,15 @@ public class StartSceneScript : MonoBehaviour
         startSceneView.PressSettingButton += PressSettingButton;
         startSceneView.PressExitButton += PressExitButton;
         startSceneView.Init();
+        SoundManager.Instance?.PlayBGM(SoundType.BGM_Title);
     }
+    
 
     private void PressStartButton()
     {
         SceneManager.LoadScene("GameScene");
+        
+        SoundManager.Instance?.PlayBGM(SoundType.BGM_Main);
     }
 
     private void PressSettingButton()

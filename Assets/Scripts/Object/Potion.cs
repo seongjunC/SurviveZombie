@@ -1,5 +1,4 @@
 using Manager;
-using Player;
 using UnityEngine;
 
 namespace Object

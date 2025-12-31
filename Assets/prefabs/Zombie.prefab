@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 100
-  detectRange: 5
+  detectRange: 6
   attackRange: 1.5
   moveSpeed: 4
   attackDamage: 25
@@ -187,7 +187,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   damage: 20
-  indicatorDuration: 2
+  indicatorDuration: 1
   indicatorMaterial: {fileID: 2100000, guid: 01b7fd04beaee9c4a8bc1a65dfa96ab0, type: 2}
 --- !u!33 &7778690312771900512
 MeshFilter:

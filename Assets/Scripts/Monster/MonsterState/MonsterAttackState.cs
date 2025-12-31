@@ -49,7 +49,6 @@ namespace Monster.MonsterState
 
             if (Time.time - lastAttack > attackCool)
             {
-                Debug.Log("Attack State");
                 Attack();
             }
         }

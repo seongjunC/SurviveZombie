@@ -120,6 +120,8 @@ namespace Monster
 
             if (currentHp <= 0)
             {
+                SoundManager.Instance.PlaySFXAtPoint(SoundType.SFX_ZombieDead, transform.position, 0.5f);
+                
                 stateMachine.ChangeState(GetState<MonsterDeadState>());
                 OnDeath?.Invoke();
                 
@@ -127,6 +129,7 @@ namespace Monster
             }
             else
             {
+                SoundManager.Instance.PlaySFXAtPoint(SoundType.SFX_ZombieReact, transform.position, 0.5f);
                 animator.SetTrigger(Hit);
                 stateMachine.ChangeState(GetState<MonsterChaseState>());
             }

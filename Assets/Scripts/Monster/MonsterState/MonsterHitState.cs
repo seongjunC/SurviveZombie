@@ -21,7 +21,7 @@ namespace Monster.MonsterState
         {
             AnimatorStateInfo stateInfo = controller.animator.GetCurrentAnimatorStateInfo(0);
 
-            if (stateInfo.IsName("ZombieHit") && stateInfo.normalizedTime >= 1.0f)
+            if (stateInfo.IsName("ZombieHit") && stateInfo.normalizedTime >= 0.5f)
             {
                 stateMachine.ChangeState(controller.GetState<MonsterChaseState>());
             }

@@ -29,7 +29,7 @@ namespace Monster.MonsterState
                 return;
             }
 
-            if (distance > controller.detectRange * 1.5f)
+            if (distance > controller.detectRange * 1.8f)
             {
                 stateMachine.ChangeState(controller.GetState<MonsterReturnState>());
                 return;

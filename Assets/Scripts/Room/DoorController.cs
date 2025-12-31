@@ -18,7 +18,6 @@ namespace Room
 
         private void OnTriggerEnter(Collider other)
         {
-            Debug.Log(other.transform.tag);
             if (!other.CompareTag("Player")) return;
             
             if(isOpen) return;
@@ -26,8 +25,6 @@ namespace Room
             
             Vector3 Location = transform.position - other.transform.position;
             float dot = Vector3.Dot(Location, transform.up);
-            Debug.Log($"{transform.localPosition} {other.transform.position}, {dot}");
-            Debug.Log(dot<0f);
             Open(dot < 0f);
         }
 
@@ -48,8 +45,6 @@ namespace Room
         private void Open(bool IsBack)
         {
             isOpen = true;
-            
-            Debug.Log(IsBack);
             RoomManager.Instance.EnterRoom(IsBack ? RoomB : RoomA);
 
             foreach (var door in doors)

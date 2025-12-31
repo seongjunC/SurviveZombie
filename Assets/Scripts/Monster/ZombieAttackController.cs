@@ -18,7 +18,7 @@ namespace Monster
         [SerializeField] private int damage = 20;
 
         [Header("시각 효과")]
-        [SerializeField] private float indicatorDuration = 1f;
+        [SerializeField] private float indicatorDuration = 0.7f;
         [SerializeField] private Material indicatorMaterial;
         
         private MeshFilter meshFilter;
@@ -50,7 +50,6 @@ namespace Monster
 
         public void PerformAttack()
         {
-            Debug.Log("Attack");
             Collider[] targets = Physics.OverlapSphere(transform.position, attackRadius, targetMask);
 
             HashSet<GameObject> hitTargets = new();
@@ -74,7 +73,6 @@ namespace Monster
                 player.TakeDamage(damage);
                 
                 hitTargets.Add(target.gameObject);
-                Debug.Log($"Damage : {damage}");
             }
         }
         

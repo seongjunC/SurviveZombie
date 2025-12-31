@@ -27,7 +27,6 @@ namespace Player
 
             if (!player.characterController.isGrounded)
             {
-                Debug.Log("Not Grounded");
                 stateMachine.ChangeState(player.GetState<PlayerMoveState>());
                 return;
             }

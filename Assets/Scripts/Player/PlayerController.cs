@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
+using Manager;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -67,6 +68,11 @@ namespace Player
             _states.TryAdd(typeof(PlayerDashState), new PlayerDashState(this, stateMachine));
             _states.TryAdd(typeof(PlayerAimState), new PlayerAimState(this, stateMachine));
 
+
+            GlobalStateManager.Instance.player = this;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            
             PlayerReady = true;
             PlayerCheck();
 
@@ -94,9 +100,6 @@ namespace Player
         private void Start()
         {
             stateMachine.Initialize(GetState<PlayerIdleState>());
-            
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
         }
 
         private void Update()
@@ -173,6 +176,8 @@ namespace Player
                 stateMachine.ChangeState(GetState<PlayerReloadState>());
                 return;
             }
+            SoundManager.Instance.PlaySFX(SoundType.SFX_PlayerShoot);
+            
             GameObject obj = ObjectPoolManager.Instance.SpawnObject(
                 "Bullet", gunObject.transform.position, aimCamera.transform.rotation);
             obj.transform.SetParent(SpawnedBullet);
@@ -183,6 +188,8 @@ namespace Player
 
         public void Reload()
         {
+            SoundManager.Instance.PlaySFX(SoundType.SFX_PlayerReload);
+            
             stat.Reload();
             needReload = false;
         }
