@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Player
@@ -9,7 +10,8 @@ namespace Player
         private static readonly int InputY = Animator.StringToHash("InputY");
         private Transform cameraTransform;
         
-        
+        private Coroutine rotateCoroutine;
+
         public PlayerAimState(PlayerController player, PlayerStateMachine stateMachine) : base(player, stateMachine)
         {
             if (Camera.main is not null) cameraTransform = Camera.main.transform;
@@ -19,6 +21,9 @@ namespace Player
         {
             player.animator.SetBool(isAim, true);
             //TODO : player 애니메이터 설정
+            
+            if (rotateCoroutine is not null) player.StopCoroutine(rotateCoroutine);
+            rotateCoroutine = player.StartCoroutine(RotateCameraForward());
             
             player.SetAimCamera(true);
         }
@@ -33,6 +38,7 @@ namespace Player
 
             if (Input.GetMouseButtonUp(1))
             {
+                player.animator.SetBool(isAim, false);
                 stateMachine.ChangeState(player.GetState<PlayerIdleState>());
                 return;
             }
@@ -71,9 +77,36 @@ namespace Player
             player.animator.SetFloat(InputY, z, 0.1f, Time.deltaTime);
         }
 
+        private IEnumerator RotateCameraForward()
+        {
+            if (cameraTransform == null) yield break;
+            
+            Vector3 camForward = cameraTransform.forward;
+            camForward.y = 0;
+            if (camForward == Vector3.zero) camForward = player.transform.forward;
+
+            Quaternion startRotation = player.transform.rotation;
+            Quaternion targetRotation = Quaternion.LookRotation(camForward);
+
+            float time = 0f;
+            float duration = 0.2f;
+
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+                float t = time / duration;
+                
+                player.transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
+                yield return null;
+            }
+            
+            player.transform.rotation = targetRotation;
+            rotateCoroutine = null;
+
+        }
+
         public override void Exit()
         {
-            player.animator.SetBool(isAim, false);
             player.SetAimCamera(false);
             
             player.animator.SetFloat(InputX, 0, 0.1f, Time.deltaTime);

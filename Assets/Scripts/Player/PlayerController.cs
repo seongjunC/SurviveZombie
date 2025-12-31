@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
+using Manager;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -21,6 +22,8 @@ namespace Player
         
         public GameObject gunObject;
         public Transform SpawnedBullet;
+        [SerializeField] private GameObject idleGun;
+        [SerializeField] private GameObject aimGun;
         
         private float gravity = -9.81f;
         private float verticalVelocity;
@@ -29,6 +32,7 @@ namespace Player
 
         [Header("UI 설정")]
         [SerializeField] private GameObject uiUnderBar;
+        [SerializeField] private GameObject aimCrosshair;
         
         
         public CharacterController characterController { get; private set; }
@@ -40,7 +44,6 @@ namespace Player
         public Action OnPlayerInit;
         public Action OnPlayerDead;
         public Action OnGameClear;
-        //TODO : GameClear 추후 설정
 
         private bool PlayerReady;
         private bool PlayerStatReady;
@@ -65,6 +68,11 @@ namespace Player
             _states.TryAdd(typeof(PlayerDashState), new PlayerDashState(this, stateMachine));
             _states.TryAdd(typeof(PlayerAimState), new PlayerAimState(this, stateMachine));
 
+
+            GlobalStateManager.Instance.player = this;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            
             PlayerReady = true;
             PlayerCheck();
 
@@ -75,6 +83,7 @@ namespace Player
             if (PlayerReady && PlayerStatReady)
             {
                 OnPlayerInit?.Invoke();
+                stat.OnStatReady -= StatReady;
                 uiUnderBar.SetActive(true);
             }
             else return;
@@ -91,9 +100,6 @@ namespace Player
         private void Start()
         {
             stateMachine.Initialize(GetState<PlayerIdleState>());
-            
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
         }
 
         private void Update()
@@ -146,7 +152,10 @@ namespace Player
         {
             mainCamera.Priority = ON ? 10 : 20;
             aimCamera.Priority = ON ? 20 : 10;
+            idleGun.SetActive(!ON);
+            aimGun.SetActive(ON);
             
+            if (aimCrosshair is not null) aimCrosshair.SetActive(ON);
         }
 
         public void TakeDamage(int amount)
@@ -167,6 +176,8 @@ namespace Player
                 stateMachine.ChangeState(GetState<PlayerReloadState>());
                 return;
             }
+            SoundManager.Instance.PlaySFX(SoundType.SFX_PlayerShoot);
+            
             GameObject obj = ObjectPoolManager.Instance.SpawnObject(
                 "Bullet", gunObject.transform.position, aimCamera.transform.rotation);
             obj.transform.SetParent(SpawnedBullet);
@@ -177,6 +188,8 @@ namespace Player
 
         public void Reload()
         {
+            SoundManager.Instance.PlaySFX(SoundType.SFX_PlayerReload);
+            
             stat.Reload();
             needReload = false;
         }
@@ -185,6 +198,20 @@ namespace Player
         public Vector3 GetVerticalVector()
         {
             return new Vector3(0, verticalVelocity, 0);
+        }
+
+        public Vector3 GetCameraDirection(float x, float z)
+        {
+            var cameraTransform = Camera.main?.transform;
+            Vector3 camForward = cameraTransform.forward;
+            Vector3 camRight = cameraTransform.right;
+            
+            camForward.y = 0;
+            camRight.y = 0;
+            camForward.Normalize();
+            camRight.Normalize();
+            
+            return (camForward * z + camRight * x).normalized;
         }
 
         public T GetState<T>() where T : PlayerStateBase

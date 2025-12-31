@@ -9,7 +9,7 @@ namespace Monster
         [SerializeField]
         private List<MonsterSpawner> spawners = new List<MonsterSpawner>();
 
-        public void OnEnable()
+        public void SpawnMonsters()
         {
             foreach(var spawner in spawners){
                 if (spawner is not null && spawner.gameObject.activeSelf)
@@ -17,7 +17,7 @@ namespace Monster
             }
         }
 
-        public void OnDisable()
+        public void DespawnMonsters()
         {
             foreach(var spawner in spawners){
                 if (spawner is not null) 

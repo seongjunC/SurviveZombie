@@ -19,19 +19,7 @@ namespace Player
 
             player.ApplyInvincible();
             
-            float x = Input.GetAxisRaw("Horizontal");
-            float z = Input.GetAxisRaw("Vertical");
-            
-            dashDirection = new Vector3(x, 0, z).normalized;
-
-            if (dashDirection.magnitude < 0.1f)
-            {
-                dashDirection = player.transform.forward;
-            }
-            else
-            {
-                player.transform.rotation = Quaternion.LookRotation(dashDirection);
-            }
+            dashDirection = player.transform.forward;
 
         }
 

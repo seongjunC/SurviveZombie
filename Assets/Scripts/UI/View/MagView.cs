@@ -18,7 +18,7 @@ namespace UI
         
         private MagPresenter _presenter;
 
-        public void OnEnable()
+        public void Start()
         {
             player = GlobalStateManager.Instance.player;
             
@@ -41,7 +41,6 @@ namespace UI
 
         public void SetMag(int mag,int maxMag)
         {
-            Debug.Log($"SetMag {mag} / {maxMag}");
             int len = magImages.Length;
             var slotPer = maxMag / len;
             if ( maxMag % len >0) slotPer++;

@@ -8,12 +8,13 @@ namespace Monster
         [Header("Settings")] public string monsterTag = "Enemy";
         
         private GameObject monster;
-        private int savedHp = 0;
+        [SerializeField] private int savedHp = 0;
         private bool _isDead = false;
+        private bool _isActive = false;
 
         public void ActivateSpawner()
         {
-            if (_isDead) return;
+            if (_isDead || _isActive) return;
             
             monster ??= ObjectPoolManager.Instance.SpawnObject(
                 monsterTag, transform.position, Quaternion.identity);
@@ -29,8 +30,12 @@ namespace Monster
                 controller.startPos = transform.position;
                 controller.OnDeath -= HandleMonsterDeath;
                 controller.OnDeath += HandleMonsterDeath;
-                    
-                if (savedHp > 0) controller.InitMonster();
+
+                if (savedHp > 0)
+                {
+                    _isActive = true;
+                    controller.InitMonster(savedHp);
+                }
             }
         }
 
@@ -67,7 +72,8 @@ namespace Monster
                         
             ObjectPoolManager.Instance.ReturnObjectToPool(monster);
             controller.OnDeath -= HandleMonsterDeath;
-            
+
+            _isActive = false;
             monster = null;
         }
         

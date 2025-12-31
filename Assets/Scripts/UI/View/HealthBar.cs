@@ -31,7 +31,6 @@ namespace UI
         private void Initialize(){
             if (player is not null)
             {
-                Debug.Log("Player Init-> hp");
                 _presenter = new HPPresenter(this, player);
                 player.OnPlayerInit -= Initialize;
             }

@@ -33,7 +33,6 @@ public class HPPresenter
     private void PlayerInit()
     {
         maxHp = (int)_player.GetStatus(PlayerStatusType.maxHealth);
-        Debug.Log($"{maxHp} max");
         _player.SubscribeEvent(PlayerStatusType.currentHealth, UpdateView);
         
         UpdateView((int)_player.GetStatus(PlayerStatusType.currentHealth));
